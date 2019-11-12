@@ -19,6 +19,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  nice:
+    git: git://github.com/AnEnigmaticBug/nice
+  sqflite: ^1.1.7+2
 
 dev_dependencies:
   flutter_test:
