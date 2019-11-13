@@ -10,6 +10,7 @@ class MessApp extends StatelessWidget {
       title: 'Mess App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Quicksand',
       ),
       home: Scaffold(
         body: Center(
