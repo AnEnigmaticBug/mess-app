@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:messapp/menu/menu_info.dart';
+import 'package:messapp/menu/menu_repository.dart';
+import 'package:messapp/menu/menu_screen.dart';
+import 'package:messapp/util/database_helper.dart';
+import 'package:nice/nice.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MessApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final menuRepository = MenuRepository(
+    database: await databaseInstance('revamp.db'),
+    client: NiceClient(
+      baseUrl: 'http://142.93.213.45/api',
+      headers: {'Content-Type': 'application/json'},
+    ),
+  );
+
+  runApp(MessApp(menuRepository: menuRepository));
+}
 
 class MessApp extends StatelessWidget {
+  const MessApp({
+    @required this.menuRepository,
+    Key key,
+  }) : super(key: key);
+
+  final MenuRepository menuRepository;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,10 +37,9 @@ class MessApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Quicksand',
       ),
-      home: Scaffold(
-        body: Center(
-          child: Text('Test Page'),
-        ),
+      home: ChangeNotifierProvider.value(
+        value: MenuInfo(menuRepository),
+        child: MenuScreen(),
       ),
     );
   }
