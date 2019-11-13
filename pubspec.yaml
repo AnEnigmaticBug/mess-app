@@ -14,7 +14,7 @@ description: The SSMS app done right. In Flutter.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: ">=2.6.0-dev <3.0.0"
 
 dependencies:
   flutter:
