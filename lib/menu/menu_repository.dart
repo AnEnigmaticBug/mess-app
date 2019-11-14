@@ -97,6 +97,7 @@ class MenuRepository {
     await _db.rawUpdate('''
       INSERT OR REPLACE
         INTO DishRating (dishId, mealId, rating)
+      VALUES (?, ?, ?)
     ''', [dishId, mealId, rating.index]);
   }
 
