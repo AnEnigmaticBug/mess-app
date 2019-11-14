@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:messapp/menu/menu_info.dart';
 import 'package:messapp/menu/menu_repository.dart';
 import 'package:messapp/menu/menu_screen.dart';
@@ -14,6 +15,12 @@ void main() async {
     client: NiceClient(
       baseUrl: 'http://142.93.213.45/api',
       headers: {'Content-Type': 'application/json'},
+    ),
+  );
+
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Color(0xFF5A534A),
     ),
   );
 
