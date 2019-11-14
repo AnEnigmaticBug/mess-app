@@ -71,6 +71,9 @@ flutter:
     - family: LibreBaskerville
       fonts:
         - asset: assets/fonts/LibreBaskerville-Regular.ttf
+    - family: AppIcons
+      fonts:
+        - asset: assets/icons/AppIcons.ttf
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
