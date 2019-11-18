@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:messapp/menu/menu_info.dart';
 import 'package:messapp/menu/menu_repository.dart';
 import 'package:messapp/menu/menu_screen.dart';
+import 'package:messapp/util/app_theme_data.dart';
 import 'package:messapp/util/database_helper.dart';
 import 'package:nice/nice.dart';
 import 'package:provider/provider.dart';
@@ -40,10 +41,7 @@ class MessApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Mess App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Quicksand',
-      ),
+      theme: appThemeData,
       home: ChangeNotifierProvider.value(
         value: MenuInfo(menuRepository),
         child: MenuScreen(),
