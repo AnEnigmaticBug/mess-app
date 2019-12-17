@@ -1,4 +1,4 @@
-class Date {
+class Date implements Comparable<Date> {
   Date(
     this.year,
     this.month,
@@ -39,6 +39,17 @@ class Date {
 
   @override
   int get hashCode => day.hashCode ^ month.hashCode & year.hashCode;
+
+  @override
+  int compareTo(Date other) {
+    if (year > other.year || month > other.month || day > other.day) {
+      return 1;
+    }
+    if (year < other.year || month < other.month || day < other.day) {
+      return -1;
+    }
+    return 0;
+  }
 }
 
 class DateFormatter {
