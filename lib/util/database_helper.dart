@@ -47,6 +47,30 @@ Future<Database> databaseInstance(String dbName) async {
           PRIMARY KEY(dishId, mealId)
         )
       ''');
+
+      await txn.execute('''
+        CREATE TABLE ActiveIssue(
+          id INTEGER PRIMARY KEY,
+          title TEXT NOT NULL,
+          dateCreated TEXT NOT NULL,
+          upvoteCount INTEGER NOT NULL,
+          upvoted INTEGER NOT NULL CHECK(upvoted IN (0, 1)),
+          flagged INTEGER NOT NULL CHECK(flagged IN (0, 1))
+        )
+      ''');
+
+      await txn.execute('''
+        CREATE TABLE SolvedIssue(
+          id INTEGER PRIMARY KEY,
+          title TEXT NOT NULL,
+          dateCreated TEXT NOT NULL,
+          upvoteCount INTEGER NOT NULL,
+          upvoted INTEGER NOT NULL CHECK(upvoted IN (0, 1)),
+          flagged INTEGER NOT NULL CHECK(upvoted IN (0, 1)),
+          dateSolved TEXT NOT NULL,
+          reason TEXT NOT NULL
+        )
+      ''');
       });
   });
 
