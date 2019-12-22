@@ -19,4 +19,10 @@ class AppIcons {
   static const thumbs_up_solid = IconData(0x6C, fontFamily: _fontFamily);
   static const thumbs_down_outlined = IconData(0x6D, fontFamily: _fontFamily);
   static const thumbs_down_solid = IconData(0x6E, fontFamily: _fontFamily);
+  static const flag_outlined = IconData(0x6F, fontFamily: _fontFamily);
+  static const flag_solid = IconData(0x70, fontFamily: _fontFamily);
+  static const upvote_outlined = IconData(0x71, fontFamily: _fontFamily);
+  static const upvote_solid = IconData(0x72, fontFamily: _fontFamily);
+  static const clock = IconData(0x73, fontFamily: _fontFamily);
+  static const star = IconData(0x74, fontFamily: _fontFamily);
 }
