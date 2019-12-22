@@ -41,6 +41,106 @@ class Screen extends StatelessWidget {
   }
 }
 
+class TabbedScreen extends StatelessWidget {
+  const TabbedScreen({
+    @required this.title,
+    @required this.tabs,
+    @required this.children,
+    @required this.selectedTabIndex,
+    this.fab,
+    Key key,
+  })  : assert(tabs.length == children.length),
+        super(key: key);
+
+  final String title;
+  final List<String> tabs;
+  final List<Widget> children;
+  final int selectedTabIndex;
+  final Widget fab;
+
+  @override
+  Widget build(BuildContext context) {
+    final appBarStyle = Theme.of(context).textTheme.title;
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title, style: appBarStyle),
+          centerTitle: true,
+          bottom: TabBar(
+            isScrollable: true,
+            labelColor: AppColors.textDark,
+            labelStyle: TextStyle(
+              fontSize: 12.0,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'Quicksand',
+            ),
+            indicatorColor: AppColors.textDark,
+            indicatorSize: TabBarIndicatorSize.label,
+            tabs: tabs
+                .map(
+                  (t) => Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(t),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.backgroundGradient1,
+                AppColors.backgroundGradient2,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: SafeArea(
+            child: TabBarView(children: children),
+          ),
+        ),
+        floatingActionButton: fab,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        bottomNavigationBar: _BottomNav(
+          currentIndex: selectedTabIndex,
+        ),
+      ),
+    );
+  }
+}
+
+class FAB extends StatelessWidget {
+  const FAB({
+    @required this.label,
+    @required this.onPressed,
+    Key key,
+  }) : super(key: key);
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(offset: Offset(0.0, 6.0), blurRadius: 6.0, color: Color(0x1A000000)),
+        ],
+      ),
+      child: FlatButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        color: Color(0xFFFFE0A4),
+        child: Text(label),
+        textColor: AppColors.textDark,
+        onPressed: onPressed,
+      ),
+    );
+  }
+}
+
 class _BottomNav extends StatelessWidget {
   const _BottomNav({
     this.currentIndex,
