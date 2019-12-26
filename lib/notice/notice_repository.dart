@@ -57,8 +57,9 @@ class NoticeRepository {
     return await _db.rawQuery('''
       SELECT id, body, heading, startDate, 
         CASE
-          WHEN noticeType = 'C' THEN true
-          WHEN noticeType = 'N' THEN false
+          WHEN noticeType = 'C' THEN 1
+          WHEN noticeType = 'N' THEN 0
+          ELSE 0
         END AS isCritical
       FROM Notices
       ORDER BY startDate
@@ -70,6 +71,10 @@ class NoticeRepository {
     notices.clear();
 
     for(var row in await _dbNotices){
+
+      String date = "";
+
+
 
       notices.add(Notice(
         id: row['id'],
