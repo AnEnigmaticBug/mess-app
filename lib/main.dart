@@ -3,9 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:messapp/menu/menu_info.dart';
 import 'package:messapp/menu/menu_repository.dart';
 import 'package:messapp/menu/menu_screen.dart';
-import 'package:messapp/notice/notice_info.dart';
-import 'package:messapp/notice/notice_repository.dart';
-import 'package:messapp/notice/notice_screen.dart';
 import 'package:messapp/util/app_theme_data.dart';
 import 'package:messapp/util/database_helper.dart';
 import 'package:nice/nice.dart';
@@ -14,7 +11,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final menuRepository = NoticeRepository(
+  final menuRepository = MenuRepository(
     database: await databaseInstance('revamp.db'),
     client: NiceClient(
       baseUrl: 'http://142.93.213.45/api',
@@ -37,7 +34,7 @@ class MessApp extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final NoticeRepository menuRepository;
+  final MenuRepository menuRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +43,8 @@ class MessApp extends StatelessWidget {
       title: 'Mess App',
       theme: appThemeData,
       home: ChangeNotifierProvider.value(
-        value: NoticeInfo(menuRepository),
-        child: NoticeScreen(),
+        value: MenuInfo(menuRepository),
+        child: MenuScreen(),
       ),
     );
   }
