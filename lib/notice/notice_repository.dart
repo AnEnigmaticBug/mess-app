@@ -21,12 +21,12 @@ class NoticeRepository {
       return _cache;
     }
 
-    await _refreshCache();
+    await refreshCache();
     await _getCache();
     return _cache;
   }
   
-  Future<void> _refreshCache() async {
+  Future<void> refreshCache() async {
     final response = await _client.get('/notice/valid/');
 
     if (response.statusCode != 200){
