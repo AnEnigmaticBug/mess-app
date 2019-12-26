@@ -1,4 +1,4 @@
-class Date {
+class Date implements Comparable<Date> {
   Date(
     this.year,
     this.month,
@@ -39,6 +39,17 @@ class Date {
 
   @override
   int get hashCode => day.hashCode ^ month.hashCode & year.hashCode;
+
+  @override
+  int compareTo(Date other) {
+    if (year > other.year || month > other.month || day > other.day) {
+      return 1;
+    }
+    if (year < other.year || month < other.month || day < other.day) {
+      return -1;
+    }
+    return 0;
+  }
 }
 
 class DateFormatter {
@@ -73,5 +84,29 @@ class DateFormatter {
       case DateTime.november: return 'November';
       case DateTime.december: return 'December';
     }
+  }
+
+  String get oldness {
+    final now = Date.now();
+
+    int diff = now.year - date.year;
+    String unit = 'year';
+
+    if (now.year > date.year) {
+      diff = now.year - date.year;
+      unit = 'year';
+    } else if (now.month > date.month) {
+      diff = now.month - date.month;
+      unit = 'month';
+    } else if (now.day - date.day > 1) {
+      diff = now.day - date.day;
+      unit = 'day';
+    } else if (now.day - date.day == 1) {
+      return 'Yesterday';
+    } else {
+      return 'Today';
+    }
+
+    return '$diff $unit${diff > 1 ? 's' : ''} ago';
   }
 }

@@ -74,13 +74,77 @@ class NoticeRepository {
 
       String date = "";
 
+      switch (row['startDate'].toString().substring(5, 7)){
+        case '01' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
 
+        case '02' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '03' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '04' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '05' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '06' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '07' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '08' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '09' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '10' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '11' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        case '12' : {
+          date = 'Jan ${row['startDate'].toString().substring(8)}';
+        }
+        break;
+
+        default: {
+          date = row['startDate'].toString().substring(5);
+        }
+      }
 
       notices.add(Notice(
         id: row['id'],
         body: row['body'],
         heading: row['heading'],
-        startDate: row['startDate'],
+        startDate: date,
         isCritical: row['isCritical']
       ));
     }

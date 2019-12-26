@@ -43,11 +43,12 @@ class NoticeScreen extends StatelessWidget{
                     child: Row(
                       children: <Widget>[
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
                               state.notices[position].heading,
                               style: TextStyle(
-                                fontFamily: 'Quicksand',
+                                fontFamily: 'Quicksand-SemiBold',
                                 fontSize: 16.0,
                                 color: AppColors.textDark
                               ),
@@ -89,7 +90,7 @@ class NoticeScreen extends StatelessWidget{
 
 Widget _criticalIcon(int isCritical) {
   if(isCritical == 1)
-    return Text('C');
+    return Icon(AppIcons.star, color: AppColors.starColor,);
   else
-    return Text('N');
+    return SizedBox(width: 1.0, height: 1.0);
 }
