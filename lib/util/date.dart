@@ -85,4 +85,28 @@ class DateFormatter {
       case DateTime.december: return 'December';
     }
   }
+
+  String get oldness {
+    final now = Date.now();
+
+    int diff = now.year - date.year;
+    String unit = 'year';
+
+    if (now.year > date.year) {
+      diff = now.year - date.year;
+      unit = 'year';
+    } else if (now.month > date.month) {
+      diff = now.month - date.month;
+      unit = 'month';
+    } else if (now.day - date.day > 1) {
+      diff = now.day - date.day;
+      unit = 'day';
+    } else if (now.day - date.day == 1) {
+      return 'Yesterday';
+    } else {
+      return 'Today';
+    }
+
+    return '$diff $unit${diff > 1 ? 's' : ''} ago';
+  }
 }
