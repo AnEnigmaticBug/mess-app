@@ -370,8 +370,14 @@ class _FlagButton extends StatelessWidget {
         color: issue.flagged ? Color(0xFFDB4F31) : AppColors.mildDark,
         size: 16.0,
       ),
-      onPressed: () {
-        issue.setFlagged(!issue.flagged);
+      onPressed: () async{
+        try {
+            await issue.setFlagged(!issue.flagged);
+          } on Exception {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text('Could not flag the issue'),
+            ));
+          }
       },
     );
   }
@@ -422,8 +428,14 @@ class _UpvoteButton extends StatelessWidget {
             ],
           ),
         ),
-        onTap: () {
-          issue.setUpvoted(!issue.upvoted);
+        onTap: () async {
+          try {
+            await issue.setUpvoted(!issue.upvoted);
+          } on Exception {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text('Could not modify upvotes'),
+            ));
+          }
         },
       ),
     );

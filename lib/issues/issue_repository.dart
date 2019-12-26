@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'package:messapp/issues/issue.dart';
 import 'package:messapp/util/date.dart';
 import 'package:messapp/util/http_exceptions.dart';
@@ -96,12 +97,62 @@ class IssueRepository {
   Future<void> setUpvoted({
     @required int issueId,
     @required bool value,
-  }) async {}
+  }) async {
+    await _db.transaction((txn) async {
+      if (value) {
+        await txn.execute('''
+          UPDATE ActiveIssue
+             SET upvoted = ?,
+                 upvoteCount = upvoteCount + 1
+          WHERE id = ?
+        ''', [1, issueId]);
+      } else {
+        await txn.execute('''
+          UPDATE ActiveIssue
+             SET upvoted = ?,
+                 upvoteCount = upvoteCount - 1
+          WHERE id = ?
+        ''', [0, issueId]);
+      }
+
+      final reqBody = json.encode([
+        {
+          'issue_id': issueId,
+          'value': value,
+        },
+      ]);
+      final res = await _client.post('/set-upvoted', body: reqBody);
+
+      if (res.statusCode != 200) {
+        throw res.toException();
+      }
+    });
+  }
 
   Future<void> setFlagged({
     @required int issueId,
     @required bool value,
-  }) async {}
+  }) async {
+    await _db.transaction((txn) async {
+      await txn.execute('''
+        UPDATE ActiveIssue
+           SET flagged = ?
+        WHERE id = ?
+      ''', [value ? 1 : 0, issueId]);
+
+      final reqBody = json.encode([
+        {
+          'issue_id': issueId,
+          'value': value,
+        },
+      ]);
+      final res = await _client.post('/set-flagged', body: reqBody);
+
+      if (res.statusCode != 200) {
+        throw res.toException();
+      }
+    });
+  }
 
   Future<void> _populateCaches() async {
     await _populateActiveIssueCache();

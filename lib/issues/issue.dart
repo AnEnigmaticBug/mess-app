@@ -33,6 +33,7 @@ abstract class Issue with ChangeNotifier {
   bool get flagged => _flagged;
 
   Future<void> setUpvoted(bool value) async {
+    final originalUpvoteCount = _upvoteCount;
     _upvoted = value;
     if (_upvoted) {
       _upvoteCount += 1;
@@ -40,13 +41,26 @@ abstract class Issue with ChangeNotifier {
       _upvoteCount -= 1;
     }
     notifyListeners();
-    await _repo.setUpvoted(issueId: id, value: value);
+    try {
+      await _repo.setUpvoted(issueId: id, value: value);
+    } on Exception catch (e) {
+      _upvoted = !value;
+      _upvoteCount = originalUpvoteCount;
+      notifyListeners();
+      throw e;
+    }
   }
 
   Future<void> setFlagged(bool value) async {
     _flagged = value;
     notifyListeners();
-    await _repo.setFlagged(issueId: id, value: value);
+    try {
+      await _repo.setFlagged(issueId: id, value: value);
+    } on Exception catch(e) {
+      _flagged = !value;
+      notifyListeners();
+      throw e;
+    }
   }
 }
 
