@@ -47,6 +47,18 @@ Future<Database> databaseInstance(String dbName) async {
           PRIMARY KEY(dishId, mealId)
         )
       ''');
+
+      await txn.execute('''
+        CREATE TABLE Notices(
+          id INTEGER PRIMARY KEY,
+          body TEXT,
+          heading TEXT NOT NULL,
+          startDate TEXT NOT NULL,
+          endDate TEXT, 
+          noticeType TEXT
+        )
+      ''');
+
       });
   });
 
