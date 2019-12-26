@@ -9,5 +9,7 @@ class AppColors {
   static const bottomNavBackground = Color(0xFFF8F6F1);
   static const bottomNavSelected = Color(0xFF766B6B);
   static const bottomNavUnselected = Color(0xFFBFB0A3);
+  static const mildDark = Color(0xFFBFB0A3);
+  static const shadow = Color(0x0F000000);
   static const textDark = Color(0xFF6B6154);
 }
