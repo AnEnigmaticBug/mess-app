@@ -153,6 +153,15 @@ class IssueRepository {
     });
   }
 
+  Future<void> createIssue(String title) async {
+    final reqBody = json.encode({'title': title});
+    final res = await _client.post('/issues', body: reqBody);
+
+    if (res.statusCode != 200) {
+      throw res.toException();
+    }
+  }
+
   Future<void> _populateCaches() async {
     await _populateActiveIssueCache();
     await _populateSolvedIssueCache();
