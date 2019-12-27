@@ -47,7 +47,10 @@ class IssuesScreen extends StatelessWidget {
                 // Builder allows us to use Scaffold.
                 return FAB(
                   label: '+ Create new issue',
-                  onPressed: () {},
+                  onPressed: () async {
+                    await Navigator.pushNamed(context, '/create-issue');
+                    await Provider.of<IssueInfo>(context).refresh();
+                  },
                 );
               },
             ),
