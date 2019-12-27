@@ -18,7 +18,11 @@ class Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appBarStyle = Theme.of(context).textTheme.title;
     return Scaffold(
-      appBar: AppBar(title: Text(title, style: appBarStyle), centerTitle: true),
+      appBar: AppBar(
+        title: Text(title, style: appBarStyle),
+        iconTheme: IconThemeData(color: AppColors.textDark),
+        centerTitle: true,
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -66,6 +70,7 @@ class TabbedScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(title, style: appBarStyle),
+          iconTheme: IconThemeData(color: AppColors.textDark),
           centerTitle: true,
           bottom: TabBar(
             isScrollable: true,
@@ -127,7 +132,10 @@ class FAB extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(offset: Offset(0.0, 6.0), blurRadius: 6.0, color: Color(0x1A000000)),
+          BoxShadow(
+              offset: Offset(0.0, 6.0),
+              blurRadius: 6.0,
+              color: Color(0x1A000000)),
         ],
       ),
       child: FlatButton(
