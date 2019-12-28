@@ -23,6 +23,7 @@ dependencies:
     git: git://github.com/AnEnigmaticBug/nice
   provider: ^3.1.0+1
   sqflite: ^1.1.7+2
+  url_launcher: ^5.4.1
 
 dev_dependencies:
   flutter_test:
