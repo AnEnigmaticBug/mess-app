@@ -4,6 +4,7 @@ import 'package:messapp/contacts/contact_info.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactsScreen extends StatelessWidget {
   @override
@@ -63,7 +64,8 @@ class _ContactTile extends StatelessWidget {
       child: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
             child: CircleAvatar(
               backgroundImage: NetworkImage(contact.photoUrl),
               radius: 32.0,
@@ -94,16 +96,31 @@ class _ContactTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: 6.0),
-              Text(
-                contact.mobileNo,
-                style: TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFFE56B44),
-                  decoration: TextDecoration.underline,
+              GestureDetector(
+                child: Text(
+                  contact.mobileNo,
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFFE56B44),
+                    decoration: TextDecoration.underline,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                onTap: () async {
+                  final url = 'tel:${contact.mobileNo}';
+
+                  if (!await canLaunch(url)) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Your device is preventing the phone call'),
+                    ));
+
+                    return;
+                  }
+
+                  await launch(url);
+                },
               ),
             ],
           ),
