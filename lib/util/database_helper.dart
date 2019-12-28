@@ -83,6 +83,16 @@ Future<Database> databaseInstance(String dbName) async {
         )
       ''');
 
+      await txn.execute('''
+        CREATE TABLE Contact(
+          name TEXT NOT NULL,
+          post TEXT NOT NULL,
+          photoUrl TEXT NOT NULL,
+          mobileNo TEXT NOT NULL,
+          PRIMARY KEY(name, post) 
+        )
+      ''');
+
       });
   });
 
