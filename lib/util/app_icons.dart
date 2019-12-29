@@ -25,4 +25,9 @@ class AppIcons {
   static const upvote_solid = IconData(0x72, fontFamily: _fontFamily);
   static const clock = IconData(0x73, fontFamily: _fontFamily);
   static const star = IconData(0x74, fontFamily: _fontFamily);
+  static const notices = IconData(0x75, fontFamily: _fontFamily);
+  static const contacts = IconData(0x76, fontFamily: _fontFamily);
+  static const developers = IconData(0x77, fontFamily: _fontFamily);
+  static const about = IconData(0x78, fontFamily: _fontFamily);
+  static const link = IconData(0x79, fontFamily: _fontFamily);
 }
