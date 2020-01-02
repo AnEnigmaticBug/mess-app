@@ -30,14 +30,55 @@ class MenuScreen extends StatelessWidget {
             return Center(child: Text(state.error));
           }
           if (state is Success) {
-            return PageView.builder(
-              itemCount: state.menus.length,
-              itemBuilder: (_, i) => _MenuPage(state.menus[i]),
-            );
+            return _Success(state: state);
           }
         },
       ),
     );
+  }
+}
+
+class _Success extends StatefulWidget {
+  const _Success({
+    Key key,
+    @required this.state,
+  }) : super(key: key);
+
+  final Success state;
+
+  @override
+  _SuccessState createState() => _SuccessState();
+}
+
+class _SuccessState extends State<_Success> {
+  PageController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialPage =
+        widget.state.menus.indexWhere((menu) => menu.date == Date.now());
+    
+    if (initialPage == -1) {
+      _controller = PageController();
+    } else {
+      _controller = PageController(initialPage: initialPage);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: _controller,
+      itemCount: widget.state.menus.length,
+      itemBuilder: (_, i) => _MenuPage(widget.state.menus[i]),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
 
