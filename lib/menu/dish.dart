@@ -23,8 +23,15 @@ class Dish with ChangeNotifier {
   Rating get rating => _rating;
 
   Future<void> rate(Rating rating) async {
+    final original = _rating;
     _rating = rating;
     notifyListeners();
-    await _repo.rate(dishId: id, mealId: mealId, rating: rating);
+    try {
+      await _repo.rate(dishId: id, mealId: mealId, rating: rating);
+    } on Exception catch (e) {
+      _rating = original;
+      notifyListeners();
+      throw e;
+    }
   }
 }

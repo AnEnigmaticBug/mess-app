@@ -93,11 +93,25 @@ class MenuRepository {
     @required int mealId,
     @required Rating rating,
   }) async {
-    await _db.rawUpdate('''
-      INSERT OR REPLACE
-        INTO DishRating (dishId, mealId, rating)
-      VALUES (?, ?, ?)
-    ''', [dishId, mealId, rating.index]);
+    await _db.transaction((txn) async {
+      final rows = await txn.rawQuery('''
+        SELECT date
+          FROM Meal
+         WHERE id = ?
+      ''', [mealId]);
+
+      final date = Date.parse(rows.first['date']);
+
+      if (date.compareTo(Date.now()) == 1) {
+        throw Exception('You can\'t rate items in advance');
+      }
+
+      await txn.rawUpdate('''
+        INSERT OR REPLACE
+          INTO DishRating (dishId, mealId, rating)
+        VALUES (?, ?, ?)
+      ''', [dishId, mealId, rating.index]);
+    });
   }
 
   Future<bool> get _dbOutdated async {

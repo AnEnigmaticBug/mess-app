@@ -253,8 +253,14 @@ class _DishTile extends StatelessWidget {
           ),
           _DishRater(
             rating: dish.rating,
-            onRate: (rating) {
-              dish.rate(rating);
+            onRate: (rating) async {
+              try {
+                await dish.rate(rating);
+              } on Exception catch (e) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text(e.toString()),
+                ));
+              }
             },
           ),
         ],
