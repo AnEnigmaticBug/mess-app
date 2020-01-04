@@ -17,29 +17,30 @@ class Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appBarStyle = Theme.of(context).textTheme.title;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title, style: appBarStyle),
-        iconTheme: IconThemeData(color: AppColors.textDark),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.backgroundGradient1,
-              AppColors.backgroundGradient2,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.backgroundGradient1,
+            AppColors.backgroundGradient2,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
-        child: SafeArea(
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text(title, style: appBarStyle),
+          iconTheme: IconThemeData(color: AppColors.textDark),
+          centerTitle: true,
+        ),
+        body: SafeArea(
           child: child,
         ),
-      ),
-      bottomNavigationBar: _BottomNav(
-        currentIndex: selectedTabIndex,
+        bottomNavigationBar: _BottomNav(
+          currentIndex: selectedTabIndex,
+        ),
       ),
     );
   }
@@ -65,52 +66,54 @@ class TabbedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appBarStyle = Theme.of(context).textTheme.title;
-    return DefaultTabController(
-      length: tabs.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(title, style: appBarStyle),
-          iconTheme: IconThemeData(color: AppColors.textDark),
-          centerTitle: true,
-          bottom: TabBar(
-            isScrollable: true,
-            labelColor: AppColors.textDark,
-            labelStyle: TextStyle(
-              fontSize: 12.0,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Quicksand',
-            ),
-            indicatorColor: AppColors.textDark,
-            indicatorSize: TabBarIndicatorSize.label,
-            tabs: tabs
-                .map(
-                  (t) => Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text(t),
-                  ),
-                )
-                .toList(),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.backgroundGradient1,
+            AppColors.backgroundGradient2,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.backgroundGradient1,
-                AppColors.backgroundGradient2,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+      ),
+      child: DefaultTabController(
+        length: tabs.length,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Text(title, style: appBarStyle),
+            iconTheme: IconThemeData(color: AppColors.textDark),
+            centerTitle: true,
+            bottom: TabBar(
+              isScrollable: true,
+              labelColor: AppColors.textDark,
+              labelStyle: TextStyle(
+                fontSize: 12.0,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Quicksand',
+              ),
+              indicatorColor: AppColors.textDark,
+              indicatorSize: TabBarIndicatorSize.label,
+              tabs: tabs
+                  .map(
+                    (t) => Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(t),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
-          child: SafeArea(
+          body: SafeArea(
             child: TabBarView(children: children),
           ),
-        ),
-        floatingActionButton: fab,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        bottomNavigationBar: _BottomNav(
-          currentIndex: selectedTabIndex,
+          floatingActionButton: fab,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          bottomNavigationBar: _BottomNav(
+            currentIndex: selectedTabIndex,
+          ),
         ),
       ),
     );
