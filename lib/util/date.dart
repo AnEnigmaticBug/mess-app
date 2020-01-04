@@ -42,13 +42,8 @@ class Date implements Comparable<Date> {
 
   @override
   int compareTo(Date other) {
-    if (year > other.year || month > other.month || day > other.day) {
-      return 1;
-    }
-    if (year < other.year || month < other.month || day < other.day) {
-      return -1;
-    }
-    return 0;
+    return DateTime(year, month, day)
+        .compareTo(DateTime(other.year, other.month, other.day));
   }
 }
 
@@ -58,55 +53,82 @@ class DateFormatter {
   final Date date;
 
   String get weekDay {
-    switch(date.weekDay) {
-      case DateTime.monday: return 'Monday';
-      case DateTime.tuesday: return 'Tuesday';
-      case DateTime.wednesday: return 'Wednesday';
-      case DateTime.thursday: return 'Thursday';
-      case DateTime.friday: return 'Friday';
-      case DateTime.saturday: return 'Saturday';
-      case DateTime.sunday: return 'Sunday';
+    switch (date.weekDay) {
+      case DateTime.monday:
+        return 'Monday';
+      case DateTime.tuesday:
+        return 'Tuesday';
+      case DateTime.wednesday:
+        return 'Wednesday';
+      case DateTime.thursday:
+        return 'Thursday';
+      case DateTime.friday:
+        return 'Friday';
+      case DateTime.saturday:
+        return 'Saturday';
+      case DateTime.sunday:
+        return 'Sunday';
     }
   }
 
   String get month {
-    switch(date.month) {
-      case DateTime.january: return 'January';
-      case DateTime.february: return 'February';
-      case DateTime.march: return 'March';
-      case DateTime.april: return 'April';
-      case DateTime.may: return 'May';
-      case DateTime.june: return 'June';
-      case DateTime.july: return 'July';
-      case DateTime.august: return 'August';
-      case DateTime.september: return 'September';
-      case DateTime.october: return 'October';
-      case DateTime.november: return 'November';
-      case DateTime.december: return 'December';
+    switch (date.month) {
+      case DateTime.january:
+        return 'January';
+      case DateTime.february:
+        return 'February';
+      case DateTime.march:
+        return 'March';
+      case DateTime.april:
+        return 'April';
+      case DateTime.may:
+        return 'May';
+      case DateTime.june:
+        return 'June';
+      case DateTime.july:
+        return 'July';
+      case DateTime.august:
+        return 'August';
+      case DateTime.september:
+        return 'September';
+      case DateTime.october:
+        return 'October';
+      case DateTime.november:
+        return 'November';
+      case DateTime.december:
+        return 'December';
     }
   }
 
   String get oldness {
-    final now = Date.now();
+    final diff = DateTime.now()
+        .difference(DateTime(date.year, date.month, date.day))
+        .abs();
 
-    int diff = now.year - date.year;
-    String unit = 'year';
-
-    if (now.year > date.year) {
-      diff = now.year - date.year;
-      unit = 'year';
-    } else if (now.month > date.month) {
-      diff = now.month - date.month;
-      unit = 'month';
-    } else if (now.day - date.day > 1) {
-      diff = now.day - date.day;
-      unit = 'day';
-    } else if (now.day - date.day == 1) {
+    if (diff.inDays == 1) {
       return 'Yesterday';
-    } else {
+    }
+    if (diff.inDays == 0) {
       return 'Today';
     }
 
-    return '$diff $unit${diff > 1 ? 's' : ''} ago';
+    int magnitude;
+    String unit;
+
+    if (diff.inDays > 365) {
+      magnitude = (diff.inDays / 365).floor();
+      unit = 'year';
+    } else if (diff.inDays > 30) {
+      magnitude = (diff.inDays / 30).floor();
+      unit = 'month';
+    } else if (diff.inDays > 7) {
+      magnitude = (diff.inDays / 7).floor();
+      unit = 'week';
+    } else {
+      magnitude = diff.inDays;
+      unit = 'day';
+    }
+
+    return '$magnitude $unit${magnitude > 1 ? 's' : ''} ago';
   }
 }
