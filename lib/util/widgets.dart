@@ -205,6 +205,23 @@ class _BottomNav extends StatelessWidget {
           isSelected: currentIndex == 4,
         ),
       ],
+      onTap: (i) {
+        if (i == currentIndex) {
+          return;
+        }
+
+        if (i == 0) {
+        } else if (i == 1) {
+        } else if (i == 2) {
+          Navigator.of(context).popUntil(ModalRoute.withName('/'));
+        } else if (i == 3) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/issues', ModalRoute.withName('/'));
+        } else if (i == 4) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/more', ModalRoute.withName('/'));
+        }
+      },
     );
   }
 }
