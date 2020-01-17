@@ -1,12 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:messapp/issues/issue.dart';
-import 'package:messapp/issues/issue_info.dart';
+import 'package:messapp/issues/issue_repository.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/app_icons.dart';
 import 'package:messapp/util/date.dart';
+import 'package:messapp/util/simple_presenter.dart';
+import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
 import 'package:provider/provider.dart';
+
+class Data {
+  const Data({
+    @required this.recentIssues,
+    @required this.popularIssues,
+    @required this.solvedIssues,
+  });
+
+  final List<Issue> recentIssues;
+  final List<Issue> popularIssues;
+  final List<Issue> solvedIssues;
+}
 
 class IssuesScreen extends StatelessWidget {
   const IssuesScreen({
@@ -15,20 +29,15 @@ class IssuesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<IssueInfo>(
-      builder: (_, issueInfo, __) {
-        final state = issueInfo.state;
+    return Consumer<SimplePresenter<IssueRepository, Data>>(
+      builder: (_, presenter, __) {
+        final state = presenter.state;
 
         if (state is Loading) {
-          return TabbedScreen(
+          return Screen(
             title: 'Issues',
             selectedTabIndex: 3,
-            tabs: ['Recent', 'Popular', 'Solved'],
-            children: [
-              Center(child: CircularProgressIndicator()),
-              Center(child: CircularProgressIndicator()),
-              Center(child: CircularProgressIndicator()),
-            ],
+            child: Center(child: CircularProgressIndicator()),
           );
         }
 
@@ -38,9 +47,9 @@ class IssuesScreen extends StatelessWidget {
             selectedTabIndex: 3,
             tabs: ['Recent', 'Popular', 'Solved'],
             children: [
-              _IssueTab<ActiveIssue>(state.recentIssues),
-              _IssueTab<ActiveIssue>(state.popularIssues),
-              _IssueTab<SolvedIssue>(state.solvedIssues),
+              _IssueTab<ActiveIssue>(state.data.recentIssues),
+              _IssueTab<ActiveIssue>(state.data.popularIssues),
+              _IssueTab<SolvedIssue>(state.data.solvedIssues),
             ],
             fab: Builder(
               builder: (context) {
@@ -48,8 +57,14 @@ class IssuesScreen extends StatelessWidget {
                 return FAB(
                   label: '+ Create new issue',
                   onPressed: () async {
-                    await Navigator.pushNamed(context, '/create-issue');
-                    await Provider.of<IssueInfo>(context).refresh();
+                    try {
+                      await Navigator.pushNamed(context, '/create-issue');
+                      await presenter.restart();
+                    } on Exception {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('Please refresh the issues data'),
+                      ));
+                    }
                   },
                 );
               },
@@ -57,7 +72,16 @@ class IssuesScreen extends StatelessWidget {
           );
         }
 
-        return Center(child: Text((state as Failure).error));
+        if (state is Failure) {
+          return Screen(
+            title: 'Issues',
+            selectedTabIndex: 3,
+            child: ErrorMessage(
+              message: state.message,
+              onRetry: presenter.restart,
+            ),
+          );
+        }
       },
     );
   }
@@ -93,7 +117,17 @@ class _IssueTab<T extends Issue> extends StatelessWidget {
         },
         separatorBuilder: (_, __) => SizedBox(height: 12.0),
       ),
-      onRefresh: Provider.of<IssueInfo>(context).refresh,
+      onRefresh: () async {
+        try {
+          final presenter =
+              Provider.of<SimplePresenter<IssueRepository, Data>>(context);
+          await presenter.refresh();
+        } on Exception catch (e) {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(e.toString()),
+          ));
+        }
+      },
     );
   }
 }
@@ -373,14 +407,14 @@ class _FlagButton extends StatelessWidget {
         color: issue.flagged ? Color(0xFFDB4F31) : AppColors.mildDark,
         size: 16.0,
       ),
-      onPressed: () async{
+      onPressed: () async {
         try {
-            await issue.setFlagged(!issue.flagged);
-          } on Exception {
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text('Could not flag the issue'),
-            ));
-          }
+          await issue.setFlagged(!issue.flagged);
+        } on Exception {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('Could not flag the issue'),
+          ));
+        }
       },
     );
   }

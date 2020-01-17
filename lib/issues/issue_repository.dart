@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:messapp/issues/issue.dart';
 import 'package:messapp/util/date.dart';
 import 'package:messapp/util/http_exceptions.dart';
+import 'package:messapp/util/simple_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:nice/nice.dart';
 import 'package:sqflite/sqlite_api.dart';
 
-class IssueRepository {
+class IssueRepository extends SimpleRepository {
   IssueRepository({
     @required Database database,
     @required NiceClient client,

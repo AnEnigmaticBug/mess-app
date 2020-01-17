@@ -5,7 +5,7 @@ import 'package:messapp/contacts/contact.dart';
 import 'package:messapp/contacts/contact_repository.dart';
 import 'package:messapp/contacts/contacts_screen.dart';
 import 'package:messapp/issues/create_issue_screen.dart';
-import 'package:messapp/issues/issue_info.dart';
+import 'package:messapp/issues/issue.dart';
 import 'package:messapp/issues/issue_repository.dart';
 import 'package:messapp/issues/issues_screen.dart';
 import 'package:messapp/menu/menu.dart';
@@ -99,7 +99,25 @@ class MessApp extends StatelessWidget {
         },
         '/issues': (context) {
           return ChangeNotifierProvider.value(
-            value: IssueInfo(issueRepository),
+            value: SimplePresenter<IssueRepository, Data>(
+                repository: issueRepository,
+                mapper: (repo) async {
+                  final active = await repo.activeIssues;
+                  final solved = await repo.solvedIssues;
+                  solved.sort((a, b) => -a.dateSolved.compareTo(b.dateSolved));
+                  final recent = List<ActiveIssue>.from(active);
+                  recent
+                      .sort((a, b) => -a.dateCreated.compareTo(b.dateCreated));
+                  final popular = List<ActiveIssue>.from(active);
+                  popular
+                      .sort((a, b) => -a.upvoteCount.compareTo(b.upvoteCount));
+
+                  return Data(
+                    recentIssues: recent,
+                    popularIssues: popular,
+                    solvedIssues: solved,
+                  );
+                }),
             child: IssuesScreen(),
           );
         },
