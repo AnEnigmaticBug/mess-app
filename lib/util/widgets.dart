@@ -152,6 +152,74 @@ class FAB extends StatelessWidget {
   }
 }
 
+class Button extends StatelessWidget {
+  const Button({
+    @required this.label,
+    @required this.onPressed,
+    Key key,
+  }) : super(key: key);
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+              offset: Offset(0.0, 4.0),
+              blurRadius: 4.0,
+              color: Color(0x0C000000)),
+        ],
+      ),
+      child: FlatButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        color: Color(0xFFFFE0A4),
+        child: Text(label),
+        textColor: AppColors.textDark,
+        onPressed: onPressed,
+      ),
+    );
+  }
+}
+
+class ErrorMessage extends StatelessWidget {
+  const ErrorMessage({
+    @required this.message,
+    @required this.onRetry,
+    Key key,
+  });
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      width: double.infinity,
+      child: Column(
+        children: [
+          Spacer(flex: 5),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textDark,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Spacer(flex: 3),
+          Button(label: 'Retry', onPressed: onRetry),
+          Spacer(flex: 2),
+        ],
+      ),
+    );
+  }
+}
+
 class _BottomNav extends StatelessWidget {
   const _BottomNav({
     this.currentIndex,
