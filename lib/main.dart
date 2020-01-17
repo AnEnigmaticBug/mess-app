@@ -12,7 +12,7 @@ import 'package:messapp/menu/menu.dart';
 import 'package:messapp/menu/menu_repository.dart';
 import 'package:messapp/menu/menu_screen.dart';
 import 'package:messapp/more/more_screen.dart';
-import 'package:messapp/notice/notice_info.dart';
+import 'package:messapp/notice/notice.dart';
 import 'package:messapp/notice/notice_repository.dart';
 import 'package:messapp/notice/notice_screen.dart';
 import 'package:messapp/util/app_theme_data.dart';
@@ -108,7 +108,10 @@ class MessApp extends StatelessWidget {
         },
         '/notices': (context) {
           return ChangeNotifierProvider.value(
-            value: NoticeInfo(noticeRepository),
+            value: SimplePresenter<NoticeRepository, List<Notice>>(
+              repository: noticeRepository,
+              mapper: (repo) => repo.notices,
+            ),
             child: NoticeScreen(),
           );
         },

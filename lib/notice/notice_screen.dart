@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:messapp/notice/notice_info.dart';
+import 'package:messapp/notice/notice.dart';
+import 'package:messapp/notice/notice_repository.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/app_icons.dart';
+import 'package:messapp/util/simple_presenter.dart';
+import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -15,21 +18,19 @@ class NoticeScreen extends StatelessWidget {
     return Screen(
       title: 'Notice',
       selectedTabIndex: 4,
-      child: Consumer<NoticeInfo>(
+      child: Consumer<SimplePresenter<NoticeRepository, List<Notice>>>(
         // ignore: missing_return
-        builder: (_, noticeInfo, __) {
-          final state = noticeInfo.state;
+        builder: (_, presenter, __) {
+          final state = presenter.state;
 
           if (state is Loading) {
             return Center(child: CircularProgressIndicator());
           }
-          if (state is Failure) {
-            return Center(child: Text(state.error));
-          }
+
           if (state is Success) {
             return ListView.builder(
               padding: const EdgeInsets.all(12.0),
-              itemCount: state.notices.length,
+              itemCount: state.data.length,
               itemBuilder: (context, position) {
                 return Card(
                   elevation: 2.0,
@@ -43,7 +44,7 @@ class NoticeScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              state.notices[position].heading,
+                              state.data[position].heading,
                               style: TextStyle(
                                   fontFamily: 'Quicksand-SemiBold',
                                   fontSize: 16.0,
@@ -53,7 +54,7 @@ class NoticeScreen extends StatelessWidget {
                               height: 20.0,
                             ),
                             Text(
-                              state.notices[position].startDate,
+                              state.data[position].startDate,
                               style: TextStyle(
                                   fontFamily: 'Quicksand',
                                   fontSize: 12.0,
@@ -64,7 +65,7 @@ class NoticeScreen extends StatelessWidget {
                         Spacer(),
                         Column(
                           children: <Widget>[
-                            _criticalIcon(state.notices[position].isCritical)
+                            _criticalIcon(state.data[position].isCritical)
                           ],
                         ),
                         SizedBox(
@@ -75,6 +76,13 @@ class NoticeScreen extends StatelessWidget {
                   ),
                 );
               },
+            );
+          }
+
+          if (state is Failure) {
+            return ErrorMessage(
+              message: state.message,
+              onRetry: presenter.restart,
             );
           }
         },

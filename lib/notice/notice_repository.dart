@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:messapp/notice/notice.dart';
 import 'package:messapp/util/http_exceptions.dart';
+import 'package:messapp/util/simple_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:nice/nice.dart';
 import 'package:sqflite/sqflite.dart';
 
-class NoticeRepository {
+class NoticeRepository extends SimpleRepository {
   NoticeRepository({
     @required Database database,
     @required NiceClient client,
@@ -22,12 +23,12 @@ class NoticeRepository {
       return _cache;
     }
 
-    await refreshCache();
+    await refresh();
     await _getCache();
     return _cache;
   }
 
-  Future<void> refreshCache() async {
+  Future<void> refresh() async {
     final response = await _client.get('/notice/valid/');
 
     if (response.statusCode != 200) {
