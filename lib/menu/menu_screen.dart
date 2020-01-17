@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:messapp/menu/dish.dart';
 import 'package:messapp/menu/meal.dart';
 import 'package:messapp/menu/menu.dart';
-import 'package:messapp/menu/menu_info.dart';
+import 'package:messapp/menu/menu_repository.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/app_icons.dart';
 import 'package:messapp/util/date.dart';
+import 'package:messapp/util/simple_presenter.dart';
+import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -19,18 +21,23 @@ class MenuScreen extends StatelessWidget {
     return Screen(
       title: 'Menu',
       selectedTabIndex: 2,
-      child: Consumer<MenuInfo>(
-        builder: (_, menuInfo, __) {
-          final state = menuInfo.state;
+      child: Consumer<SimplePresenter<MenuRepository, List<Menu>>>(
+        builder: (_, presenter, __) {
+          final state = presenter.state;
 
           if (state is Loading) {
             return Center(child: CircularProgressIndicator());
           }
-          if (state is Failure) {
-            return Center(child: Text(state.error));
-          }
+
           if (state is Success) {
             return _Success(state: state);
+          }
+
+          if (state is Failure) {
+            return ErrorMessage(
+              message: state.message,
+              onRetry: presenter.restart,
+            );
           }
         },
       ),
@@ -44,7 +51,7 @@ class _Success extends StatefulWidget {
     @required this.state,
   }) : super(key: key);
 
-  final Success state;
+  final Success<List<Menu>> state;
 
   @override
   _SuccessState createState() => _SuccessState();
@@ -57,8 +64,8 @@ class _SuccessState extends State<_Success> {
   void initState() {
     super.initState();
     final initialPage =
-        widget.state.menus.indexWhere((menu) => menu.date == Date.now());
-    
+        widget.state.data.indexWhere((menu) => menu.date == Date.now());
+
     if (initialPage == -1) {
       _controller = PageController();
     } else {
@@ -70,8 +77,8 @@ class _SuccessState extends State<_Success> {
   Widget build(BuildContext context) {
     return PageView.builder(
       controller: _controller,
-      itemCount: widget.state.menus.length,
-      itemBuilder: (_, i) => _MenuPage(widget.state.menus[i]),
+      itemCount: widget.state.data.length,
+      itemBuilder: (_, i) => _MenuPage(widget.state.data[i]),
     );
   }
 
@@ -102,7 +109,18 @@ class _MenuPage extends StatelessWidget {
             itemBuilder: (_, i) => _MealCard(menu.meals[i]),
             separatorBuilder: (_, __) => SizedBox(height: 22.0),
           ),
-          onRefresh: Provider.of<MenuInfo>(context).refresh,
+          onRefresh: () async {
+            try {
+              final presenter =
+                  Provider.of<SimplePresenter<MenuRepository, List<Menu>>>(
+                      context);
+              await presenter.refresh();
+            } on Exception catch (e) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(e.toString()),
+              ));
+            }
+          },
         ),
       ],
     );

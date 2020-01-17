@@ -4,11 +4,12 @@ import 'package:messapp/menu/meal.dart';
 import 'package:messapp/menu/menu.dart';
 import 'package:messapp/util/date.dart';
 import 'package:messapp/util/http_exceptions.dart';
+import 'package:messapp/util/simple_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:nice/nice.dart';
 import 'package:sqflite/sqflite.dart';
 
-class MenuRepository {
+class MenuRepository extends SimpleRepository {
   MenuRepository({
     @required Database database,
     @required NiceClient client,

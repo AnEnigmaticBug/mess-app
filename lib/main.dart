@@ -8,7 +8,7 @@ import 'package:messapp/issues/create_issue_screen.dart';
 import 'package:messapp/issues/issue_info.dart';
 import 'package:messapp/issues/issue_repository.dart';
 import 'package:messapp/issues/issues_screen.dart';
-import 'package:messapp/menu/menu_info.dart';
+import 'package:messapp/menu/menu.dart';
 import 'package:messapp/menu/menu_repository.dart';
 import 'package:messapp/menu/menu_screen.dart';
 import 'package:messapp/more/more_screen.dart';
@@ -72,7 +72,10 @@ class MessApp extends StatelessWidget {
       routes: {
         '/': (context) {
           return ChangeNotifierProvider.value(
-            value: MenuInfo(menuRepository),
+            value: SimplePresenter<MenuRepository, List<Menu>>(
+              repository: menuRepository,
+              mapper: (repo) => repo.menus,
+            ),
             child: MenuScreen(),
           );
         },
