@@ -41,6 +41,8 @@ void main() async {
     ),
   );
 
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   runApp(MessApp(
     menuRepository: menuRepository,
     issueRepository: issueRepository,
