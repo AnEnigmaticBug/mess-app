@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:messapp/about/about_screen.dart';
-import 'package:messapp/contacts/contact_info.dart';
+import 'package:messapp/contacts/contact.dart';
 import 'package:messapp/contacts/contact_repository.dart';
 import 'package:messapp/contacts/contacts_screen.dart';
 import 'package:messapp/issues/create_issue_screen.dart';
@@ -17,6 +17,7 @@ import 'package:messapp/notice/notice_repository.dart';
 import 'package:messapp/notice/notice_screen.dart';
 import 'package:messapp/util/app_theme_data.dart';
 import 'package:messapp/util/database_helper.dart';
+import 'package:messapp/util/simple_presenter.dart';
 import 'package:nice/nice.dart';
 import 'package:provider/provider.dart';
 
@@ -80,7 +81,10 @@ class MessApp extends StatelessWidget {
         },
         '/contacts': (context) {
           return ChangeNotifierProvider.value(
-            value: ContactInfo(contactRepository),
+            value: SimplePresenter<ContactRepository, List<Contact>>(
+              repository: contactRepository,
+              mapper: (repo) => repo.contacts,
+            ),
             child: ContactsScreen(),
           );
         },

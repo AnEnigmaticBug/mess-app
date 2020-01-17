@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:messapp/contacts/contact.dart';
 import 'package:messapp/util/http_exceptions.dart';
+import 'package:messapp/util/simple_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:nice/nice.dart';
 import 'package:sqflite/sqlite_api.dart';
 
-class ContactRepository {
+class ContactRepository extends SimpleRepository {
   ContactRepository({
     @required Database database,
     @required NiceClient client,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:messapp/contacts/contact.dart';
-import 'package:messapp/contacts/contact_info.dart';
+import 'package:messapp/contacts/contact_repository.dart';
 import 'package:messapp/util/app_colors.dart';
+import 'package:messapp/util/simple_presenter.dart';
+import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,26 +14,42 @@ class ContactsScreen extends StatelessWidget {
     return Screen(
       title: 'SSMS GC',
       selectedTabIndex: 4,
-      child: Consumer<ContactInfo>(
-        builder: (_, contactInfo, __) {
-          final state = contactInfo.state;
+      child: Consumer<SimplePresenter<ContactRepository, List<Contact>>>(
+        builder: (context, presenter, _) {
+          final state = presenter.state;
+
           if (state is Loading) {
             return Center(child: CircularProgressIndicator());
           }
+
           if (state is Success) {
             return RefreshIndicator(
               child: ListView.separated(
                 padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 80.0),
-                itemCount: state.contacts.length,
-                itemBuilder: (_, i) => _ContactTile(contact: state.contacts[i]),
+                itemCount: state.data.length,
+                itemBuilder: (_, i) {
+                  return _ContactTile(contact: state.data[i]);
+                },
                 separatorBuilder: (_, i) => SizedBox(height: 10.0),
               ),
               onRefresh: () async {
-                await contactInfo.refresh();
+                try {
+                  await presenter.refresh();
+                } on Exception catch (e) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text(e.toString()),
+                  ));
+                }
               },
             );
           }
-          return Center(child: Text((state as Failure).error));
+
+          if (state is Failure) {
+            return ErrorMessage(
+              message: state.message,
+              onRetry: presenter.restart,
+            );
+          }
         },
       ),
     );
