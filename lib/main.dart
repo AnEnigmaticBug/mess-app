@@ -8,6 +8,8 @@ import 'package:messapp/issues/create_issue_screen.dart';
 import 'package:messapp/issues/issue.dart';
 import 'package:messapp/issues/issue_repository.dart';
 import 'package:messapp/issues/issues_screen.dart';
+import 'package:messapp/login/login_repository.dart';
+import 'package:messapp/login/login_screen.dart';
 import 'package:messapp/menu/menu.dart';
 import 'package:messapp/menu/menu_repository.dart';
 import 'package:messapp/menu/menu_screen.dart';
@@ -20,16 +22,19 @@ import 'package:messapp/util/database_helper.dart';
 import 'package:messapp/util/simple_presenter.dart';
 import 'package:nice/nice.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final db = await databaseInstance('revamp.db');
+  final prefs = await SharedPreferences.getInstance();
   final client = NiceClient(
     baseUrl: 'http://142.93.213.45/api',
     headers: {'Content-Type': 'application/json'},
   );
 
+  final loginrepository = LoginRepository(preferences: prefs, client: client);
   final menuRepository = MenuRepository(database: db, client: client);
   final issueRepository = IssueRepository(database: db, client: client);
   final noticeRepository = NoticeRepository(database: db, client: client);
@@ -44,6 +49,8 @@ void main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(MessApp(
+    initialRoute: prefs.containsKey(UserPrefsKeys.jwt) ? '/' : '/login',
+    loginRepository: loginrepository,
     menuRepository: menuRepository,
     issueRepository: issueRepository,
     noticeRepository: noticeRepository,
@@ -53,6 +60,8 @@ void main() async {
 
 class MessApp extends StatelessWidget {
   const MessApp({
+    @required this.initialRoute,
+    @required this.loginRepository,
     @required this.menuRepository,
     @required this.issueRepository,
     @required this.noticeRepository,
@@ -60,6 +69,8 @@ class MessApp extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
+  final String initialRoute;
+  final LoginRepository loginRepository;
   final MenuRepository menuRepository;
   final IssueRepository issueRepository;
   final NoticeRepository noticeRepository;
@@ -71,6 +82,7 @@ class MessApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Mess App',
       theme: appThemeData,
+      initialRoute: initialRoute,
       routes: {
         '/': (context) {
           return ChangeNotifierProvider.value(
@@ -121,6 +133,12 @@ class MessApp extends StatelessWidget {
                   );
                 }),
             child: IssuesScreen(),
+          );
+        },
+        '/login': (context) {
+          return Provider.value(
+            value: loginRepository,
+            child: LoginScreen(),
           );
         },
         '/more': (context) {
