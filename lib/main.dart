@@ -19,6 +19,7 @@ import 'package:messapp/notice/notice_repository.dart';
 import 'package:messapp/notice/notice_screen.dart';
 import 'package:messapp/util/app_theme_data.dart';
 import 'package:messapp/util/database_helper.dart';
+import 'package:messapp/util/pref_keys.dart';
 import 'package:messapp/util/simple_presenter.dart';
 import 'package:nice/nice.dart';
 import 'package:provider/provider.dart';
@@ -48,14 +49,27 @@ void main() async {
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  runApp(MessApp(
-    initialRoute: prefs.containsKey(UserPrefsKeys.jwt) ? '/' : '/login',
-    loginRepository: loginrepository,
-    menuRepository: menuRepository,
-    issueRepository: issueRepository,
-    noticeRepository: noticeRepository,
-    contactRepository: contactRepository,
-  ));
+  if (prefs.containsKey(PrefKeys.jwt)) {
+    client.headers.addAll({'Authorization': prefs.getString(PrefKeys.jwt)});
+
+    runApp(MessApp(
+      initialRoute: '/',
+      loginRepository: loginrepository,
+      menuRepository: menuRepository,
+      issueRepository: issueRepository,
+      noticeRepository: noticeRepository,
+      contactRepository: contactRepository,
+    ));
+  } else {
+    runApp(MessApp(
+      initialRoute: '/login',
+      loginRepository: loginrepository,
+      menuRepository: menuRepository,
+      issueRepository: issueRepository,
+      noticeRepository: noticeRepository,
+      contactRepository: contactRepository,
+    ));
+  }
 }
 
 class MessApp extends StatelessWidget {

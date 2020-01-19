@@ -2,20 +2,10 @@ import 'dart:convert';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:messapp/util/http_exceptions.dart';
+import 'package:messapp/util/pref_keys.dart';
 import 'package:meta/meta.dart';
 import 'package:nice/nice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class UserPrefsKeys {
-  UserPrefsKeys._();
-
-  static const jwt = 'USER_JWT';
-  static const id = 'USER_ID';
-  static const name = 'USER_NAME';
-  static const room = 'USER_ROOM';
-  static const bitsId = 'USER_BITS_ID';
-  static const qrCode = 'USER_QR_CODE';
-}
 
 class LoginRepository {
   LoginRepository({
@@ -47,11 +37,13 @@ class LoginRepository {
 
     final userJson = json.decode(res.body);
 
-    await _sPrefs.setString(UserPrefsKeys.jwt, userJson['JWT']);
-    await _sPrefs.setInt(UserPrefsKeys.id, userJson['id']);
-    await _sPrefs.setString(UserPrefsKeys.name, userJson['name']);
-    await _sPrefs.setString(UserPrefsKeys.room, userJson['room']);
-    await _sPrefs.setString(UserPrefsKeys.bitsId, userJson['bits_id']);
-    await _sPrefs.setString(UserPrefsKeys.qrCode, userJson['qr_code']);
+    await _sPrefs.setString(PrefKeys.jwt, userJson['JWT']);
+    await _sPrefs.setInt(PrefKeys.userId, userJson['id']);
+    await _sPrefs.setString(PrefKeys.userName, userJson['name']);
+    await _sPrefs.setString(PrefKeys.userRoom, userJson['room']);
+    await _sPrefs.setString(PrefKeys.bitsId, userJson['bits_id']);
+    await _sPrefs.setString(PrefKeys.qrCode, userJson['qr_code']);
+
+    _client.headers.addAll({'Authorization': userJson['JWT']});
   }
 }
