@@ -29,6 +29,65 @@ class GrubRepository extends SimpleRepository {
     return _cache;
   }
 
+  Future<GrubDetails> grubDetails({
+    @required int grubId,
+  }) async {
+    return await _db.transaction((txn) async {
+      final grubRow = (await txn.rawQuery('''
+        SELECT id, name, organizer, date, signUpDeadline, cancelDeadline, slotATime, slotBTime, audience
+          FROM Grub
+         WHERE id == ?
+      ''', [grubId]))[0];
+
+      final offeringRows = await txn.rawQuery('''
+        SELECT o.id AS oid, o.name, o.items, o.venue, o.price, t.id AS tid, t.slot
+          FROM Offering o
+               LEFT JOIN Ticket t ON o.id == t.offeringId
+         WHERE o.grubId == ?
+      ''', [grubId]);
+
+      final offerings = offeringRows
+          .map((r) => Offering(
+                id: r['oid'],
+                name: r['name'],
+                items: r['items'].split('~'),
+                price: r['price'],
+              ))
+          .toList();
+
+      final signedOfferingRow =
+          offeringRows.firstWhere((r) => r['tid'] != null, orElse: () => null);
+
+      final isSigned = signedOfferingRow != null;
+
+      if (isSigned) {
+        return SignedUpGrubDetails(
+          id: grubRow['id'],
+          name: grubRow['name'],
+          organizer: grubRow['organizer'],
+          date: Date.parse(grubRow['date']),
+          cancelDeadline: Date.parse(grubRow['cancelDeadline']),
+          time: signedOfferingRow['slot'] == 0
+              ? grubRow['slotATime']
+              : grubRow['slotBTime'],
+          venue: signedOfferingRow['venue'],
+          offerings: offerings,
+          signedOfferingName: signedOfferingRow['name'],
+        );
+      } else {
+        return UnsignedGrubDetails(
+          id: grubRow['id'],
+          name: grubRow['name'],
+          organizer: grubRow['organizer'],
+          date: Date.parse(grubRow['date']),
+          signUpDeadline: Date.parse(grubRow['signUpDeadline']),
+          audience: Audience.values[grubRow['audience']],
+          offerings: offerings,
+        );
+      }
+    });
+  }
+
   Future<void> refresh() async {
     final res1 = await _client.get('/grubs/view');
 
