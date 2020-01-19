@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:messapp/contacts/contact.dart';
 import 'package:messapp/contacts/contact_repository.dart';
 import 'package:messapp/util/app_colors.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/simple_presenter.dart';
 import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
@@ -36,9 +37,7 @@ class ContactsScreen extends StatelessWidget {
                 try {
                   await presenter.refresh();
                 } on Exception catch (e) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text(e.toString()),
-                  ));
+                  e.toString().showSnackBar(context);
                 }
               },
             );
@@ -130,10 +129,7 @@ class _ContactTile extends StatelessWidget {
                   final url = 'tel:${contact.mobileNo}';
 
                   if (!await canLaunch(url)) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Your device is preventing the phone call'),
-                    ));
-
+                    'Your device is stopping the call'.showSnackBar(context);
                     return;
                   }
 

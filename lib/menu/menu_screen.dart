@@ -6,6 +6,7 @@ import 'package:messapp/menu/menu_repository.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/app_icons.dart';
 import 'package:messapp/util/date.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/simple_presenter.dart';
 import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
@@ -116,9 +117,7 @@ class _MenuPage extends StatelessWidget {
                       context);
               await presenter.refresh();
             } on Exception catch (e) {
-              Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text(e.toString()),
-              ));
+              e.toString().showSnackBar(context);
             }
           },
         ),
@@ -316,9 +315,7 @@ class _DishTile extends StatelessWidget {
               try {
                 await dish.rate(rating);
               } on Exception catch (e) {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text(e.toString()),
-                ));
+                e.toString().showSnackBar(context);
               }
             },
           ),

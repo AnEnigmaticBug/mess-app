@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:messapp/issues/issue_repository.dart';
 import 'package:messapp/util/app_colors.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -170,9 +171,7 @@ class _IssueEntryState extends State<_IssueEntry> {
     final title = _controller.text;
 
     if (title.isEmpty) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Issues cannot have an empty body'),
-      ));
+      'Issues cannot have an empty body'.showSnackBar(context);
       return;
     }
 
@@ -186,13 +185,9 @@ class _IssueEntryState extends State<_IssueEntry> {
 
     try {
       await Provider.of<IssueRepository>(context).createIssue(title);
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Issue created successfully'),
-      ));
+      'Issue created successfully'.showSnackBar(context);
     } on Exception {
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Could not create issue....'),
-      ));
+      'Could not create issue....'.showSnackBar(context);
     } finally {
       Navigator.pop(context);
     }

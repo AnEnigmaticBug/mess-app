@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:messapp/login/login_repository.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -86,9 +87,7 @@ class _ContentState extends State<_Content> {
                 await repo.login(idToken);
                 Navigator.of(context).pop();
               } on Exception catch (e) {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text(e.toString()),
-                ));
+                e.toString().showSnackBar(context);
                 setState(() {
                   _isLoading = false;
                 });

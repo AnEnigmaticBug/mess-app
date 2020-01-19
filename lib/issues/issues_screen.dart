@@ -5,6 +5,7 @@ import 'package:messapp/issues/issue_repository.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/app_icons.dart';
 import 'package:messapp/util/date.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/simple_presenter.dart';
 import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
@@ -61,9 +62,7 @@ class IssuesScreen extends StatelessWidget {
                       await Navigator.pushNamed(context, '/create-issue');
                       await presenter.restart();
                     } on Exception {
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('Please refresh the issues data'),
-                      ));
+                      'Please refresh the issues data'.showSnackBar(context);
                     }
                   },
                 );
@@ -123,9 +122,7 @@ class _IssueTab<T extends Issue> extends StatelessWidget {
               Provider.of<SimplePresenter<IssueRepository, Data>>(context);
           await presenter.refresh();
         } on Exception catch (e) {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(e.toString()),
-          ));
+          e.toString().showSnackBar(context);
         }
       },
     );
@@ -411,9 +408,7 @@ class _FlagButton extends StatelessWidget {
         try {
           await issue.setFlagged(!issue.flagged);
         } on Exception {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('Could not flag the issue'),
-          ));
+          'Could not flag the issue'.showSnackBar(context);
         }
       },
     );
@@ -469,9 +464,7 @@ class _UpvoteButton extends StatelessWidget {
           try {
             await issue.setUpvoted(!issue.upvoted);
           } on Exception {
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text('Could not modify upvotes'),
-            ));
+            'Could not modify upvotes'.showSnackBar(context);
           }
         },
       ),
