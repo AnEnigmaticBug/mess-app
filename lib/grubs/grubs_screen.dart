@@ -119,68 +119,79 @@ class _Listing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8.0),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadow,
-            offset: Offset(3.0, 8.0),
-            blurRadius: 10.0,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            listing.name,
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textDark,
+    return GestureDetector(
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadow,
+              offset: Offset(3.0, 8.0),
+              blurRadius: 10.0,
             ),
-          ),
-          SizedBox(height: 12.0),
-          Text(
-            listing.organizer,
-            style: TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.w300,
-              color: AppColors.textDark,
-            ),
-          ),
-          SizedBox(height: 12.0),
-          Row(
-            children: [
-              Text(
-                '${DateFormatter(listing.date).month} ${listing.date.day}',
-                style: TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textDark,
-                ),
-              ),
-              Spacer(),
-              _AudienceIndicator(audience: listing.audience),
-            ],
-          ),
-          if (forSignedUp)
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Text(
-                'Cancellation Deadline: ${DateFormatter(listing.cancelDeadline).month} ${listing.cancelDeadline.day}',
-                style: TextStyle(
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textDark,
-                ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              listing.name,
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textDark,
               ),
             ),
-        ],
+            SizedBox(height: 12.0),
+            Text(
+              listing.organizer,
+              style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w300,
+                color: AppColors.textDark,
+              ),
+            ),
+            SizedBox(height: 12.0),
+            Row(
+              children: [
+                Text(
+                  '${DateFormatter(listing.date).month} ${listing.date.day}',
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.textDark,
+                  ),
+                ),
+                Spacer(),
+                _AudienceIndicator(audience: listing.audience),
+              ],
+            ),
+            if (forSignedUp)
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  'Cancellation Deadline: ${DateFormatter(listing.cancelDeadline).month} ${listing.cancelDeadline.day}',
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.textDark,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
+      onTap: () async {
+        await Navigator.of(context).pushNamed('/grub-details', arguments: {
+          'id': listing.id,
+          'name': listing.name,
+        });
+        final presenter =
+            Provider.of<SimplePresenter<GrubRepository, Data>>(context);
+        await presenter.restart();
+      },
     );
   }
 }

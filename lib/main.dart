@@ -4,6 +4,8 @@ import 'package:messapp/about/about_screen.dart';
 import 'package:messapp/contacts/contact.dart';
 import 'package:messapp/contacts/contact_repository.dart';
 import 'package:messapp/contacts/contacts_screen.dart';
+import 'package:messapp/grubs/grub_details_presenter.dart';
+import 'package:messapp/grubs/grub_details_screen.dart';
 import 'package:messapp/grubs/grub_repository.dart';
 import 'package:messapp/grubs/grubs_screen.dart' as g;
 import 'package:messapp/issues/create_issue_screen.dart';
@@ -149,6 +151,17 @@ class MessApp extends StatelessWidget {
               },
             ),
             child: g.GrubsScreen(),
+          );
+        },
+        '/grub-details': (context) {
+          final args =
+              ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+          return ChangeNotifierProvider.value(
+            value: GrubDetailsPresenter(
+              repository: grubRepository,
+              grubId: args['id'],
+            ),
+            child: GrubDetailsScreen(grubName: args['name']),
           );
         },
         '/issues': (context) {
