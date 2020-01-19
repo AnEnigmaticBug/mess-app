@@ -121,7 +121,7 @@ class IssueRepository extends SimpleRepository {
           'value': value,
         },
       ]);
-      final res = await _client.post('/set-upvoted', body: reqBody);
+      final res = await _client.post('/issues/vote', body: reqBody);
 
       if (res.statusCode != 200) {
         throw res.toException();
@@ -146,7 +146,7 @@ class IssueRepository extends SimpleRepository {
           'value': value,
         },
       ]);
-      final res = await _client.post('/set-flagged', body: reqBody);
+      final res = await _client.post('/issues/flag', body: reqBody);
 
       if (res.statusCode != 200) {
         throw res.toException();
@@ -156,7 +156,7 @@ class IssueRepository extends SimpleRepository {
 
   Future<void> createIssue(String title) async {
     final reqBody = json.encode({'title': title});
-    final res = await _client.post('/issues', body: reqBody);
+    final res = await _client.post('/issues/', body: reqBody);
 
     if (res.statusCode != 200) {
       throw res.toException();
