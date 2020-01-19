@@ -4,10 +4,12 @@ import 'package:messapp/about/about_screen.dart';
 import 'package:messapp/contacts/contact.dart';
 import 'package:messapp/contacts/contact_repository.dart';
 import 'package:messapp/contacts/contacts_screen.dart';
+import 'package:messapp/grubs/grub_repository.dart';
+import 'package:messapp/grubs/grubs_screen.dart' as g;
 import 'package:messapp/issues/create_issue_screen.dart';
 import 'package:messapp/issues/issue.dart';
 import 'package:messapp/issues/issue_repository.dart';
-import 'package:messapp/issues/issues_screen.dart';
+import 'package:messapp/issues/issues_screen.dart' as i;
 import 'package:messapp/login/login_repository.dart';
 import 'package:messapp/login/login_screen.dart';
 import 'package:messapp/menu/menu.dart';
@@ -36,6 +38,7 @@ void main() async {
   );
 
   final loginrepository = LoginRepository(preferences: prefs, client: client);
+  final grubRepository = GrubRepository(database: db, client: client);
   final menuRepository = MenuRepository(database: db, client: client);
   final issueRepository = IssueRepository(database: db, client: client);
   final noticeRepository = NoticeRepository(database: db, client: client);
@@ -55,6 +58,7 @@ void main() async {
     runApp(MessApp(
       initialRoute: '/',
       loginRepository: loginrepository,
+      grubRepository: grubRepository,
       menuRepository: menuRepository,
       issueRepository: issueRepository,
       noticeRepository: noticeRepository,
@@ -64,6 +68,7 @@ void main() async {
     runApp(MessApp(
       initialRoute: '/login',
       loginRepository: loginrepository,
+      grubRepository: grubRepository,
       menuRepository: menuRepository,
       issueRepository: issueRepository,
       noticeRepository: noticeRepository,
@@ -76,6 +81,7 @@ class MessApp extends StatelessWidget {
   const MessApp({
     @required this.initialRoute,
     @required this.loginRepository,
+    @required this.grubRepository,
     @required this.menuRepository,
     @required this.issueRepository,
     @required this.noticeRepository,
@@ -85,6 +91,7 @@ class MessApp extends StatelessWidget {
 
   final String initialRoute;
   final LoginRepository loginRepository;
+  final GrubRepository grubRepository;
   final MenuRepository menuRepository;
   final IssueRepository issueRepository;
   final NoticeRepository noticeRepository;
@@ -125,9 +132,28 @@ class MessApp extends StatelessWidget {
             child: CreateIssueScreen(),
           );
         },
+        '/grubs': (context) {
+          return ChangeNotifierProvider.value(
+            value: SimplePresenter<GrubRepository, g.Data>(
+              repository: grubRepository,
+              mapper: (repo) async {
+                final upcoming = await repo.grubListings;
+                upcoming.sort((a, b) => -a.date.compareTo(b.date));
+                final signedUp = upcoming.where((l) => l.isSigned).toList();
+                signedUp.sort((a, b) => -a.date.compareTo(b.date));
+
+                return g.Data(
+                  upcomingGrubs: upcoming,
+                  signedUpGrubs: signedUp,
+                );
+              },
+            ),
+            child: g.GrubsScreen(),
+          );
+        },
         '/issues': (context) {
           return ChangeNotifierProvider.value(
-            value: SimplePresenter<IssueRepository, Data>(
+            value: SimplePresenter<IssueRepository, i.Data>(
                 repository: issueRepository,
                 mapper: (repo) async {
                   final active = await repo.activeIssues;
@@ -140,13 +166,13 @@ class MessApp extends StatelessWidget {
                   popular
                       .sort((a, b) => -a.upvoteCount.compareTo(b.upvoteCount));
 
-                  return Data(
+                  return i.Data(
                     recentIssues: recent,
                     popularIssues: popular,
                     solvedIssues: solved,
                   );
                 }),
-            child: IssuesScreen(),
+            child: i.IssuesScreen(),
           );
         },
         '/login': (context) {
