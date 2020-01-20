@@ -35,4 +35,37 @@ class GrubDetailsPresenter with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> signUp({
+    @required int offeringId,
+  }) async {
+    final originalState = _state;
+    _state = Loading();
+    notifyListeners();
+    try {
+      await _repo.signUp(offeringId: offeringId);
+      _state = Success(await _repo.grubDetails(grubId: grubId));
+      notifyListeners();
+    } on Exception catch (e) {
+      print(e.toString());
+      _state = originalState;
+      notifyListeners();
+      throw e;
+    }
+  }
+
+  Future<void> cancel() async {
+    final originalState = _state;
+    _state = Loading();
+    notifyListeners();
+    try {
+      await _repo.cancel(grubId: grubId);
+      _state = Success(await _repo.grubDetails(grubId: grubId));
+      notifyListeners();
+    } on Exception catch (e) {
+      _state = originalState;
+      notifyListeners();
+      throw e;
+    }
+  }
 }

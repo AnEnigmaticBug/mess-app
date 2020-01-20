@@ -88,6 +88,44 @@ class GrubRepository extends SimpleRepository {
     });
   }
 
+  Future<void> signUp({
+    @required int offeringId,
+  }) async {
+    final reqBody = json.encode({
+      'ids': [offeringId],
+    });
+    final res = await _client.post('/grubs/user/view/', body: reqBody);
+
+    if (res.statusCode != 200) {
+      throw res.toException();
+    }
+
+    await refresh();
+  }
+
+  Future<void> cancel({
+    @required int grubId,
+  }) async {
+    final row = (await _db.rawQuery('''
+      SELECT t.id AS tid
+        FROM Grub g
+             INNER JOIN Offering o ON g.id == o.grubId
+             INNER JOIN Ticket t ON o.id == t.offeringId
+       WHERE g.id == ?
+    ''', [grubId]))[0];
+
+    final reqBody = json.encode({
+      'id': row['tid'],
+    });
+    final res = await _client.post('/grubs/user/cancel/', body: reqBody);
+
+    if (res.statusCode != 200) {
+      throw res.toException();
+    }
+
+    await refresh();
+  }
+
   Future<void> refresh() async {
     final res1 = await _client.get('/grubs/view');
 
