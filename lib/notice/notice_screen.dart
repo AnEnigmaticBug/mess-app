@@ -28,6 +28,14 @@ class NoticeScreen extends StatelessWidget {
           }
 
           if (state is Success) {
+            if (state.data.isEmpty) {
+              return IllustratedMessage(
+                illustration: Image.asset('assets/images/empty_notice.png'),
+                message: 'It\'s deserted here, come back later',
+                onRetry: presenter.restart,
+              );
+            }
+
             return ListView.builder(
               padding: const EdgeInsets.all(12.0),
               itemCount: state.data.length,
