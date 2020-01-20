@@ -17,6 +17,9 @@ import 'package:messapp/more/more_screen.dart';
 import 'package:messapp/notice/notice.dart';
 import 'package:messapp/notice/notice_repository.dart';
 import 'package:messapp/notice/notice_screen.dart';
+import 'package:messapp/profile/profile.dart';
+import 'package:messapp/profile/profile_repository.dart';
+import 'package:messapp/profile/profile_screen.dart';
 import 'package:messapp/util/app_theme_data.dart';
 import 'package:messapp/util/database_helper.dart';
 import 'package:messapp/util/pref_keys.dart';
@@ -35,11 +38,12 @@ void main() async {
     headers: {'Content-Type': 'application/json'},
   );
 
-  final loginrepository = LoginRepository(preferences: prefs, client: client);
+  final loginRepository = LoginRepository(preferences: prefs, client: client);
   final menuRepository = MenuRepository(database: db, client: client);
   final issueRepository = IssueRepository(database: db, client: client);
   final noticeRepository = NoticeRepository(database: db, client: client);
   final contactRepository = ContactRepository(database: db, client: client);
+  final profileRepository = ProfileRepository(preferences: prefs);
 
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
@@ -54,7 +58,7 @@ void main() async {
 
     runApp(MessApp(
       initialRoute: '/',
-      loginRepository: loginrepository,
+      loginRepository: loginRepository,
       menuRepository: menuRepository,
       issueRepository: issueRepository,
       noticeRepository: noticeRepository,
@@ -63,11 +67,12 @@ void main() async {
   } else {
     runApp(MessApp(
       initialRoute: '/login',
-      loginRepository: loginrepository,
+      loginRepository: loginRepository,
       menuRepository: menuRepository,
       issueRepository: issueRepository,
       noticeRepository: noticeRepository,
       contactRepository: contactRepository,
+      profileRepository: profileRepository,
     ));
   }
 }
@@ -80,6 +85,7 @@ class MessApp extends StatelessWidget {
     @required this.issueRepository,
     @required this.noticeRepository,
     @required this.contactRepository,
+    @required this.profileRepository,
     Key key,
   }) : super(key: key);
 
@@ -89,6 +95,7 @@ class MessApp extends StatelessWidget {
   final IssueRepository issueRepository;
   final NoticeRepository noticeRepository;
   final ContactRepository contactRepository;
+  final ProfileRepository profileRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -167,6 +174,11 @@ class MessApp extends StatelessWidget {
             child: NoticeScreen(),
           );
         },
+        '/profile': (context) {
+          return ChangeNotifierProvider.value(
+
+          );
+        }
       },
     );
   }
