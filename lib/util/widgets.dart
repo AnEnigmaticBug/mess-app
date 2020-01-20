@@ -196,12 +196,36 @@ class ErrorMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return IllustratedMessage(
+      illustration: Image.asset('assets/images/failure.png'),
+      message: message,
+      onRetry: onRetry,
+    );
+  }
+}
+
+class IllustratedMessage extends StatelessWidget {
+  const IllustratedMessage({
+    @required this.illustration,
+    @required this.message,
+    @required this.onRetry,
+    Key key,
+  }) : super(key: key);
+
+  final Widget illustration;
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       width: double.infinity,
       child: Column(
         children: [
-          Spacer(flex: 5),
+          Spacer(flex: 4),
+          illustration,
+          Spacer(flex: 2),
           Text(
             message,
             style: TextStyle(
