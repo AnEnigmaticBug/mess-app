@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:messapp/profile/profile.dart';
 import 'package:messapp/util/pref_keys.dart';
-import 'package:messapp/util/simple_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfileRepository extends SimpleRepository {
+class ProfileRepository {
 
   ProfileRepository({
     @required SharedPreferences preferences
@@ -15,26 +14,37 @@ class ProfileRepository extends SimpleRepository {
 
   Future<Profile> get profileInfo async {
 
-    if(_cache.name != null){
-      return _cache;
-    }
+//    if(_cache.name != null){
+//      return _cache;
+//    }
+//
+//    _cache = await getCache();
+//    return _cache;
 
-    _cache = await getCache();
-    return _cache;
-  }
-
-  Future<Profile> getCache() async {
     return Profile(
         name: await _sharedPreferences.get(PrefKeys.userName) ?? "Error getting Name",
         bitsId: await _sharedPreferences.get(PrefKeys.bitsId) ?? "Error getting ID",
         room: await _sharedPreferences.get(PrefKeys.userRoom) ?? "Error getting room",
         qrCode: await _sharedPreferences.get(PrefKeys.qrCode) ?? "Error"
     );
+
   }
 
-  @override
+//  Future<Profile> getCache() async {
+//    return Profile(
+//        name: await _sharedPreferences.get(PrefKeys.userName) ?? "Error getting Name",
+//        bitsId: await _sharedPreferences.get(PrefKeys.bitsId) ?? "Error getting ID",
+//        room: await _sharedPreferences.get(PrefKeys.userRoom) ?? "Error getting room",
+//        qrCode: await _sharedPreferences.get(PrefKeys.qrCode) ?? "Error"
+//    );
+//  }
+
   Future<void> refresh() {
     // TODO: implement refresh
+    return null;
+  }
+
+  Future<void> logout() {
     return null;
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:messapp/profile/profile.dart';
+import 'package:messapp/profile/profile_presenter.dart';
 import 'package:messapp/profile/profile_repository.dart';
 import 'package:messapp/util/simple_presenter.dart';
 import 'package:messapp/util/ui_state.dart';
@@ -31,7 +32,7 @@ class _Profile extends StatefulWidget{
 class _ProfileState extends State<_Profile> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<SimplePresenter<ProfileRepository, Profile>>(
+    return Consumer<ProfilePresenter>(
         // ignore: missing_return
         builder: (_, presenter, __){
           final state = presenter.state;

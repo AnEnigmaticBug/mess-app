@@ -18,6 +18,7 @@ import 'package:messapp/notice/notice.dart';
 import 'package:messapp/notice/notice_repository.dart';
 import 'package:messapp/notice/notice_screen.dart';
 import 'package:messapp/profile/profile.dart';
+import 'package:messapp/profile/profile_presenter.dart';
 import 'package:messapp/profile/profile_repository.dart';
 import 'package:messapp/profile/profile_screen.dart';
 import 'package:messapp/util/app_theme_data.dart';
@@ -176,7 +177,8 @@ class MessApp extends StatelessWidget {
         },
         '/profile': (context) {
           return ChangeNotifierProvider.value(
-
+            value: ProfilePresenter(profileRepository),
+            child: ProfileScreen(),
           );
         }
       },
