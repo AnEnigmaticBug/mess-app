@@ -34,7 +34,14 @@ class ProfilePresenter extends ChangeNotifier{
   }
 
   Future<void> restart() async {
-
+    _state = Loading();
+    notifyListeners();
+    try {
+      getProfile();
+    } on Exception catch (e) {
+      _state = Failure(e.toString());
+      notifyListeners();
+    }
   }
 
 }

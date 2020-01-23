@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:messapp/profile/profile.dart';
 import 'package:messapp/profile/profile_presenter.dart';
 import 'package:messapp/profile/profile_repository.dart';
+import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/simple_presenter.dart';
 import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
@@ -15,65 +16,106 @@ class ProfileScreen extends StatelessWidget{
     return  Screen(
         title: "Profile",
         selectedTabIndex: 0,
-        child: _Profile(),
-    );
-  }
-}
+        child: Consumer<ProfilePresenter>(
+            // ignore: missing_return
+            builder: (_, presenter, __){
+              final state = presenter.state;
 
-class _Profile extends StatefulWidget{
-  const _Profile({
-    Key key
-  }): super(key: key);
+              if(state is Loading){
+                return Center(child: CircularProgressIndicator());
+              }
 
-  @override
-  _ProfileState createState() => _ProfileState();
-}
+              if(state is Success){
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [
+                                  AppColors.profileGradient1,
+                                  AppColors.profileGradient2
+                                ],
+                                begin: Alignment.centerRight,
+                                end: Alignment.centerLeft
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(8.0))
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Text("Name"),
+                              Text(((state as Success).data as Profile).name),
+                              Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text("BITS ID"),
+                                      Text(((state as Success).data as Profile).bitsId)
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text("Hostel Room"),
+                                      Text(((state as Success).data as Profile).room)
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(32.0),
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: AppColors.bottomNavBackground,
+                            borderRadius: BorderRadius.all(Radius.circular(8.0))
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              RaisedButton(
+                                onPressed: () async {
 
-class _ProfileState extends State<_Profile> {
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<ProfilePresenter>(
-        // ignore: missing_return
-        builder: (_, presenter, __){
-          final state = presenter.state;
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                        Spacer(),
+                        RaisedButton(
+                          onPressed: () async {
+                          },
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        )
+                      ],
+                    ),
+                  ],
+                );
+              }
 
-          if(state is Loading){
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if(state is Success){
-            return Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 8.0,
-                ),
-                Container(
-
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                Container(
-
-                ),
-                Spacer(),
-                RaisedButton(
-                  onPressed: () async {
-                  },
-                ),
-                SizedBox(
-                  height: 10.0,
-                )
-              ],
-            );
-          }
-
-          if(state is Failure){
-            return ErrorMessage(
-                message: state.message,
-                onRetry: presenter.restart);
-          }
-        }
+              if(state is Failure){
+                return ErrorMessage(
+                    message: (state as Failure).message,
+                    onRetry: presenter.restart);
+              }
+            }
+        ),
     );
   }
 }

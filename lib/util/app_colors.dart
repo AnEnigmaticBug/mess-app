@@ -13,4 +13,6 @@ class AppColors {
   static const shadow = Color(0x0F000000);
   static const textDark = Color(0xFF6B6154);
   static const starColor = Color(0xFFFFE0A4);
+  static const profileGradient1 = Color(0xFFDB4F31);
+  static const profileGradient2 = Color(0xFFF49B65);
 }
