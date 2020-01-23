@@ -4,6 +4,7 @@ import 'package:messapp/grubs/grub_details_presenter.dart';
 import 'package:messapp/grubs/grub_listing.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/date.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,7 @@ class GrubDetailsScreen extends StatelessWidget {
       title: grubName,
       selectedTabIndex: 1,
       child: Consumer<GrubDetailsPresenter>(
-        builder: (_, presenter, __) {
+        builder: (context, presenter, _) {
           final state = presenter.state;
 
           if (state is Loading) {
@@ -31,21 +32,50 @@ class GrubDetailsScreen extends StatelessWidget {
 
           if (state is Success) {
             final details = (state as Success).data;
+            final shouldSign = details is UnsignedGrubDetails;
 
-            return ListView(
-              padding: const EdgeInsets.fromLTRB(20.0, 24.0, 20.0, 100.0),
+            return Stack(
               children: [
-                if (details is UnsignedGrubDetails)
-                  _UnsignedInfo(details: details),
-                if (details is SignedUpGrubDetails)
-                  _SignedUpInfo(details: details),
-                SizedBox(height: 12.0),
-                for (var offering in details.offerings)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 6.0, horizontal: 16.0),
-                    child: _Offering(offering: offering),
+                ListView(
+                  padding: const EdgeInsets.fromLTRB(20.0, 24.0, 20.0, 100.0),
+                  children: [
+                    if (details is UnsignedGrubDetails)
+                      _UnsignedInfo(details: details),
+                    if (details is SignedUpGrubDetails)
+                      _SignedUpInfo(details: details),
+                    SizedBox(height: 12.0),
+                    for (var offering in details.offerings)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 6.0, horizontal: 16.0),
+                        child: _Offering(offering: offering),
+                      ),
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Button(
+                      label: shouldSign ? 'Sign up' : 'Cancel',
+                      onPressed: () {
+                        if (shouldSign) {
+                          _signUp(
+                            context: context,
+                            presenter: presenter,
+                            details: details,
+                          );
+                        } else {
+                          _cancel(
+                            context: context,
+                            presenter: presenter,
+                            details: details,
+                          );
+                        }
+                      },
+                    ),
                   ),
+                ),
               ],
             );
           }
@@ -59,6 +89,60 @@ class GrubDetailsScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _signUp({
+    @required BuildContext context,
+    @required GrubDetailsPresenter presenter,
+    @required UnsignedGrubDetails details,
+  }) async {
+    final offeringId = await showModalBottomSheet(
+      context: context,
+      builder: (_) => _SignUpSheet(details: details),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(8.0),
+        ),
+      ),
+    );
+
+    if (offeringId == null) {
+      return;
+    }
+
+    try {
+      await presenter.signUp(offeringId: offeringId);
+      'Success'.showSnackBar(context);
+    } on Exception catch (e) {
+      e.toString().showSnackBar(context);
+    }
+  }
+
+  Future<void> _cancel({
+    @required BuildContext context,
+    @required GrubDetailsPresenter presenter,
+    @required SignedUpGrubDetails details,
+  }) async {
+    final shouldCancel = await showModalBottomSheet(
+      context: context,
+      builder: (_) => _CancelSheet(),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(8.0),
+        ),
+      ),
+    );
+
+    if (shouldCancel == null || !shouldCancel) {
+      return;
+    }
+
+    try {
+      await presenter.cancel();
+      'Success'.showSnackBar(context);
+    } on Exception catch (e) {
+      e.toString().showSnackBar(context);
+    }
   }
 }
 
@@ -283,6 +367,143 @@ class _Offering extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SignUpSheet extends StatefulWidget {
+  const _SignUpSheet({
+    @required this.details,
+    Key key,
+  });
+
+  final UnsignedGrubDetails details;
+
+  @override
+  _SignUpSheetState createState() => _SignUpSheetState();
+}
+
+class _SignUpSheetState extends State<_SignUpSheet> {
+  int _offeringId;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _offeringId = widget.details.offerings[0].id;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(height: 24.0),
+        Text(
+          'Select the type of grub:',
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w400,
+            color: AppColors.textDark,
+          ),
+        ),
+        SizedBox(height: 24.0),
+        for (var offering in widget.details.offerings)
+          _OfferingRadio(
+            offering: offering,
+            groupValue: _offeringId,
+            onChanged: (value) {
+              setState(() {
+                _offeringId = value;
+              });
+            },
+          ),
+        SizedBox(height: 16.0),
+        RaisedButton(
+          color: Color(0xFF766B6B),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Text(
+            'Buy stub',
+            style: TextStyle(fontSize: 12.0, color: Colors.white),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop(_offeringId);
+          },
+        ),
+        SizedBox(height: 24.0),
+      ],
+    );
+  }
+}
+
+class _OfferingRadio extends StatelessWidget {
+  const _OfferingRadio({
+    @required this.offering,
+    @required this.groupValue,
+    @required this.onChanged,
+    Key key,
+  }) : super(key: key);
+
+  final Offering offering;
+  final int groupValue;
+  final Function(int) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 225.0,
+      child: RadioListTile(
+        title: Text(
+          '${offering.name} (₹ ${offering.price})',
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textDark,
+          ),
+        ),
+        activeColor: AppColors.textDark,
+        dense: true,
+        value: offering.id,
+        groupValue: groupValue,
+        onChanged: onChanged,
+      ),
+    );
+  }
+}
+
+class _CancelSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(height: 24.0),
+        Text(
+          'Do you wish to cancel your signing?',
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textDark,
+          ),
+        ),
+        SizedBox(height: 40.0),
+        RaisedButton(
+          color: Color(0xFF766B6B),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Text(
+            'Yes, cancel',
+            style: TextStyle(fontSize: 12.0, color: Colors.white),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+        ),
+        SizedBox(height: 24.0),
+      ],
     );
   }
 }
