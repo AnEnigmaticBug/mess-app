@@ -30,82 +30,80 @@ class ProfileScreen extends StatelessWidget{
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        SizedBox(
-                          height: 8.0,
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [
+                              AppColors.profileGradient1,
+                              AppColors.profileGradient2
+                            ],
+                            begin: Alignment.centerRight,
+                            end: Alignment.centerLeft
                         ),
-                        Container(
-                          margin: EdgeInsets.all(16.0),
-                          padding: EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: [
-                                  AppColors.profileGradient1,
-                                  AppColors.profileGradient2
-                                ],
-                                begin: Alignment.centerRight,
-                                end: Alignment.centerLeft
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(8.0))
-                          ),
-                          child: Row(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.shadow,
+                            offset: Offset(3.0, 8.0),
+                            blurRadius: 10.0,
+                        )]
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Text("Name"),
+                          Text(((state as Success).data as Profile).name),
+                          Row(
                             children: <Widget>[
-                              Text("Name"),
-                              Text(((state as Success).data as Profile).name),
                               Column(
                                 children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Text("BITS ID"),
-                                      Text(((state as Success).data as Profile).bitsId)
-                                    ],
-                                  )
+                                  Text("BITS ID"),
+                                  Text(((state as Success).data as Profile).bitsId)
                                 ],
                               ),
                               Column(
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Text("Hostel Room"),
-                                      Text(((state as Success).data as Profile).room)
-                                    ],
-                                  )
-                                ],
+                                children: <Widget> [
+                                  Text("Hostel Room"),
+                                  Text(((state as Success).data as Profile).room)
+                                ]
                               )
                             ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 8.0,
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(32.0),
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: AppColors.bottomNavBackground,
-                            borderRadius: BorderRadius.all(Radius.circular(8.0))
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              RaisedButton(
-                                onPressed: () async {
-                                  await presenter.refreshQr();
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        RaisedButton(
-                          onPressed: () async {
-                            await presenter.logout();
-                          },
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        )
-                      ],
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(32.0),
+                      padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: AppColors.bottomNavBackground,
+                        borderRadius: BorderRadius.all(Radius.circular(8.0))
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          RaisedButton(
+                            onPressed: () async {
+                              await presenter.refreshQr();
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    RaisedButton(
+                      onPressed: () async {
+                        await presenter.logout();
+                      },
+                    ),
+                    SizedBox(
+                      height: 10.0,
                     ),
                   ],
                 );
