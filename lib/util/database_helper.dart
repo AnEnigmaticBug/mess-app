@@ -14,6 +14,41 @@ Future<Database> databaseInstance(String dbName) async {
       await txn.execute('''PRAGMA foreign_keys = ON''');
 
       await txn.execute('''
+        CREATE TABLE Grub(
+          id INTEGER PRIMARY KEY,
+          name TEXT NOT NULL,
+          organizer TEXT NOT NULL,
+          date TEXT NOT NULL,
+          signUpDeadline TEXT NOT NULL,
+          cancelDeadline TEXT NOT NULL,
+          slotATime TEXT,
+          slotBTime TEXT,
+          audience INTEGER NOT NULL CHECK(audience IN (0, 1, 2))
+        )
+      ''');
+
+      await txn.execute('''
+        CREATE TABLE Offering(
+          id INTEGER PRIMARY KEY,
+          grubId INTEGER NOT NULL,
+          name TEXT NOT NULL,
+          items TEXT NOT NULL,
+          venue TEXT,
+          price TEXT NOT NULL,
+          FOREIGN KEY(grubId) REFERENCES Grub(id) ON DELETE CASCADE
+        )
+      ''');
+
+      await txn.execute('''
+        CREATE TABLE Ticket(
+          id INTEGER PRIMARY KEY,
+          offeringId INTEGER NOT NULL,
+          slot INTEGER NOT NULL CHECK(slot IN (0, 1)),
+          FOREIGN KEY(offeringId) REFERENCES Offering(id) ON DELETE CASCADE
+        )
+      ''');
+
+      await txn.execute('''
         CREATE TABLE Dish(
           id INTEGER PRIMARY KEY,
           name TEXT NOT NULL
@@ -92,8 +127,7 @@ Future<Database> databaseInstance(String dbName) async {
           PRIMARY KEY(name, post) 
         )
       ''');
-
-      });
+    });
   });
 
   return _db;

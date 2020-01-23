@@ -31,6 +31,14 @@ class MenuScreen extends StatelessWidget {
           }
 
           if (state is Success) {
+            if (state.data.isEmpty) {
+              return IllustratedMessage(
+                illustration: Image.asset('assets/images/empty_menu.png'),
+                message: 'We haven\'t received the menu yet!',
+                onRetry: presenter.restart,
+              );
+            }
+
             return _Success(state: state);
           }
 
