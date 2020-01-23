@@ -42,56 +42,92 @@ class NoticeScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(12.0),
                 itemCount: state.data.length,
                 itemBuilder: (context, position) {
-                  return Container(
-                    padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.shadow,
-                          offset: Offset(3.0, 8.0),
-                          blurRadius: 10.0,
-                        ),
-                      ],
+                  return GestureDetector(
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.shadow,
+                            offset: Offset(3.0, 8.0),
+                            blurRadius: 10.0,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                state.data[position].heading,
+                                style: TextStyle(
+                                    fontFamily: 'Quicksand',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16.0,
+                                    color: AppColors.textDark),
+                                maxLines: 2,
+                              ),
+                              SizedBox(
+                                height: 12.0,
+                              ),
+                              Text(
+                                state.data[position].startDate,
+                                style: TextStyle(
+                                    fontFamily: 'Quicksand',
+                                    fontSize: 12.0,
+                                    color: AppColors.textDark),
+                              )
+                            ],
+                          ),
+                          Spacer(),
+                          Column(
+                            children: <Widget>[
+                              _criticalIcon(state.data[position].isCritical)
+                            ],
+                          ),
+                          SizedBox(
+                            width: 8.0,
+                          )
+                        ],
+                      ),
                     ),
-                    child: Row(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              state.data[position].heading,
-                              style: TextStyle(
-                                  fontFamily: 'Quicksand',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16.0,
-                                  color: AppColors.textDark),
-                              maxLines: 2,
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) => Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  state.data[position].heading,
+                                  style: TextStyle(
+                                      fontFamily: 'Quicksand',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16.0,
+                                      color: AppColors.textDark),
+                                ),
+                                Text(
+                                  state.data[position].startDate,
+                                  style: TextStyle(
+                                      fontFamily: 'Quicksand',
+                                      fontSize: 12.0,
+                                      color: AppColors.textDark),
+                                ),
+                                Text(
+                                  state.data[position].body,
+                                  style: TextStyle(
+                                      fontFamily: 'Quicksand',
+                                      fontSize: 12.0,
+                                      color: AppColors.textDark),
+                                  ),
+                                )
+                              ],
                             ),
-                            SizedBox(
-                              height: 12.0,
-                            ),
-                            Text(
-                              state.data[position].startDate,
-                              style: TextStyle(
-                                  fontFamily: 'Quicksand',
-                                  fontSize: 12.0,
-                                  color: AppColors.textDark),
-                            )
-                          ],
-                        ),
-                        Spacer(),
-                        Column(
-                          children: <Widget>[
-                            _criticalIcon(state.data[position].isCritical)
-                          ],
-                        ),
-                        SizedBox(
-                          width: 8.0,
-                        )
-                      ],
-                    ),
+                          ));
+                    },
                   );
                 },
               ),
