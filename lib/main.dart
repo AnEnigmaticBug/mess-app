@@ -39,7 +39,8 @@ void main() async {
   final db = await databaseInstance('revamp.db');
   final prefs = await SharedPreferences.getInstance();
   final client = NiceClient(
-    baseUrl: 'http://142.93.213.45/api',
+//    http://142.93.213.45/api
+    baseUrl: 'http://ssmsbitspilani.pythonanywhere.com/api',
     headers: {'Content-Type': 'application/json'},
   );
 
@@ -49,7 +50,7 @@ void main() async {
   final issueRepository = IssueRepository(database: db, client: client);
   final noticeRepository = NoticeRepository(database: db, client: client);
   final contactRepository = ContactRepository(database: db, client: client);
-  final profileRepository = ProfileRepository(preferences: prefs);
+  final profileRepository = ProfileRepository(preferences: prefs, client: client);
 
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(

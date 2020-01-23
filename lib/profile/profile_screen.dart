@@ -20,6 +20,7 @@ class ProfileScreen extends StatelessWidget{
             // ignore: missing_return
             builder: (_, presenter, __){
               final state = presenter.state;
+              presenter.getProfile();
 
               if(state is Loading){
                 return Center(child: CircularProgressIndicator());
@@ -89,7 +90,7 @@ class ProfileScreen extends StatelessWidget{
                             children: <Widget>[
                               RaisedButton(
                                 onPressed: () async {
-
+                                  await presenter.refreshQr();
                                 },
                               )
                             ],
@@ -98,6 +99,7 @@ class ProfileScreen extends StatelessWidget{
                         Spacer(),
                         RaisedButton(
                           onPressed: () async {
+                            await presenter.logout();
                           },
                         ),
                         SizedBox(

@@ -54,7 +54,8 @@ class NoticeScreen extends StatelessWidget {
                             Text(
                               state.data[position].heading,
                               style: TextStyle(
-                                  fontFamily: 'Quicksand-SemiBold',
+                                  fontFamily: 'Quicksand',
+                                  fontWeight: FontWeight.w600,
                                   fontSize: 16.0,
                                   color: AppColors.textDark),
                             ),
@@ -77,7 +78,7 @@ class NoticeScreen extends StatelessWidget {
                           ],
                         ),
                         SizedBox(
-                          width: 16.0,
+                          width: 8.0,
                         )
                       ],
                     ),

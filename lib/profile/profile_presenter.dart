@@ -8,7 +8,7 @@ class ProfilePresenter extends ChangeNotifier{
   final ProfileRepository _repo;
   UiState<Profile> _state = Loading();
 
-  ProfilePresenter(ProfileRepository repository): this._repo = repository{}
+  ProfilePresenter(ProfileRepository repository): this._repo = repository;
 
   UiState<Profile> get state => _state;
 
@@ -25,11 +25,14 @@ class ProfilePresenter extends ChangeNotifier{
   Future<void> refreshQr() async {
     _state = Loading();
     notifyListeners();
-    await _repo.refresh();
+    await _repo.refreshQr();
     getProfile();
   }
 
   Future<void> logout() async {
+    _state = Loading();
+    notifyListeners();
+    await _repo.logout();
 
   }
 

@@ -1,15 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:messapp/profile/profile.dart';
 import 'package:messapp/util/pref_keys.dart';
+import 'package:nice/nice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:messapp/util/http_exceptions.dart';
 
 class ProfileRepository {
 
   ProfileRepository({
+    @required NiceClient client,
     @required SharedPreferences preferences
-  }): this._sharedPreferences = preferences;
+  }): this._sharedPreferences = preferences,
+      this._niceClient = client;
 
   final SharedPreferences _sharedPreferences;
+  final NiceClient _niceClient;
 
   Future<Profile> get profileInfo async {
     return Profile(
@@ -20,12 +27,21 @@ class ProfileRepository {
     );
   }
 
-  Future<void> refresh() {
-    return null;
+  Future<void> refreshQr() async {
+    final response = await _niceClient.get('/refresh/qr');
+
+    if(response.statusCode != 200){
+      return response.toException();
+    }
+
+    final qrJson = json.decode(response.body) as Map<String, String>;
+    await _sharedPreferences.setString(PrefKeys.qrCode, qrJson['QR']);
+
   }
 
-  Future<void> logout() {
-    return null;
+  Future<void> logout() async {
+    //use _signIn from loginRepository
+    await _sharedPreferences.clear();
   }
 
 }
