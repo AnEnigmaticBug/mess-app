@@ -4,6 +4,7 @@ import 'package:messapp/about/about_screen.dart';
 import 'package:messapp/contacts/contact.dart';
 import 'package:messapp/contacts/contact_repository.dart';
 import 'package:messapp/contacts/contacts_screen.dart';
+import 'package:messapp/developers/developers_screen.dart';
 import 'package:messapp/grubs/grub_details_presenter.dart';
 import 'package:messapp/grubs/grub_details_screen.dart';
 import 'package:messapp/grubs/grub_repository.dart';
@@ -133,6 +134,9 @@ class MessApp extends StatelessWidget {
             value: issueRepository,
             child: CreateIssueScreen(),
           );
+        },
+        '/developers': (context) {
+          return DevelopersScreen();
         },
         '/grubs': (context) {
           return ChangeNotifierProvider.value(
