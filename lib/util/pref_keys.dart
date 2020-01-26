@@ -11,4 +11,5 @@ class PrefKeys {
   static const grubsRefresh = 'GRUBS_REFRESH';
   static const issuesRefresh = 'ISSUES_REFRESH';
   static const noticesRefresh = 'NOTICES_REFRESH';
+  static const ratingsPush = 'RATINGS_PUSH';
 }

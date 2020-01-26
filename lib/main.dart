@@ -55,6 +55,7 @@ void main() async {
         PrefKeys.grubsRefresh: Duration(days: 3),
         PrefKeys.issuesRefresh: Duration(days: 1),
         PrefKeys.noticesRefresh: Duration(days: 2),
+        PrefKeys.ratingsPush: Duration(days: 5),
       },
       preferences: prefs,
     );
@@ -66,7 +67,11 @@ void main() async {
       client: client,
       keeper: keeper,
     );
-    final menuRepository = MenuRepository(database: db, client: client);
+    final menuRepository = MenuRepository(
+      database: db,
+      client: client,
+      keeper: keeper,
+    );
     final issueRepository = IssueRepository(
       database: db,
       client: client,
