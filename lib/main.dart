@@ -1,3 +1,8 @@
+import 'dart:async';
+
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:messapp/about/about_screen.dart';
@@ -33,56 +38,65 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final db = await databaseInstance('revamp.db');
-  final prefs = await SharedPreferences.getInstance();
-  final client = NiceClient(
-    baseUrl: 'http://142.93.213.45/api',
-    headers: {'Content-Type': 'application/json'},
-  );
+  Crashlytics.instance.enableInDevMode = false;
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
-  final loginrepository = LoginRepository(preferences: prefs, client: client);
-  final grubRepository = GrubRepository(database: db, client: client);
-  final menuRepository = MenuRepository(database: db, client: client);
-  final issueRepository = IssueRepository(database: db, client: client);
-  final noticeRepository = NoticeRepository(database: db, client: client);
-  final contactRepository = ContactRepository(database: db, client: client);
+  runZoned(() async {
+    final db = await databaseInstance('revamp.db');
+    final prefs = await SharedPreferences.getInstance();
+    final client = NiceClient(
+      baseUrl: 'http://142.93.213.45/api',
+      headers: {'Content-Type': 'application/json'},
+    );
+    final analytics = FirebaseAnalytics();
 
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarColor: Color(0xFF5A534A),
-    ),
-  );
+    final loginrepository = LoginRepository(preferences: prefs, client: client);
+    final grubRepository = GrubRepository(database: db, client: client);
+    final menuRepository = MenuRepository(database: db, client: client);
+    final issueRepository = IssueRepository(database: db, client: client);
+    final noticeRepository = NoticeRepository(database: db, client: client);
+    final contactRepository = ContactRepository(database: db, client: client);
 
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF5A534A),
+      ),
+    );
 
-  if (prefs.containsKey(PrefKeys.jwt)) {
-    client.headers.addAll({'Authorization': prefs.getString(PrefKeys.jwt)});
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-    runApp(MessApp(
-      initialRoute: '/',
-      loginRepository: loginrepository,
-      grubRepository: grubRepository,
-      menuRepository: menuRepository,
-      issueRepository: issueRepository,
-      noticeRepository: noticeRepository,
-      contactRepository: contactRepository,
-    ));
-  } else {
-    runApp(MessApp(
-      initialRoute: '/login',
-      loginRepository: loginrepository,
-      grubRepository: grubRepository,
-      menuRepository: menuRepository,
-      issueRepository: issueRepository,
-      noticeRepository: noticeRepository,
-      contactRepository: contactRepository,
-    ));
-  }
+    if (prefs.containsKey(PrefKeys.jwt)) {
+      client.headers.addAll({'Authorization': prefs.getString(PrefKeys.jwt)});
+
+      runApp(MessApp(
+        initialRoute: '/',
+        analytics: analytics,
+        loginRepository: loginrepository,
+        grubRepository: grubRepository,
+        menuRepository: menuRepository,
+        issueRepository: issueRepository,
+        noticeRepository: noticeRepository,
+        contactRepository: contactRepository,
+      ));
+    } else {
+      runApp(MessApp(
+        initialRoute: '/login',
+        analytics: analytics,
+        loginRepository: loginrepository,
+        grubRepository: grubRepository,
+        menuRepository: menuRepository,
+        issueRepository: issueRepository,
+        noticeRepository: noticeRepository,
+        contactRepository: contactRepository,
+      ));
+    }
+  }, onError: Crashlytics.instance.recordError);
 }
 
 class MessApp extends StatelessWidget {
   const MessApp({
     @required this.initialRoute,
+    @required this.analytics,
     @required this.loginRepository,
     @required this.grubRepository,
     @required this.menuRepository,
@@ -93,6 +107,7 @@ class MessApp extends StatelessWidget {
   }) : super(key: key);
 
   final String initialRoute;
+  final FirebaseAnalytics analytics;
   final LoginRepository loginRepository;
   final GrubRepository grubRepository;
   final MenuRepository menuRepository;
@@ -211,6 +226,9 @@ class MessApp extends StatelessWidget {
           );
         },
       },
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: analytics),
+      ],
     );
   }
 }
