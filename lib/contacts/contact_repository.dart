@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:messapp/contacts/contact.dart';
 import 'package:messapp/util/http_exceptions.dart';
+import 'package:messapp/util/pref_keys.dart';
 import 'package:messapp/util/simple_repository.dart';
+import 'package:messapp/util/time_keeper.dart';
 import 'package:meta/meta.dart';
 import 'package:nice/nice.dart';
 import 'package:sqflite/sqlite_api.dart';
@@ -11,16 +13,23 @@ class ContactRepository extends SimpleRepository {
   ContactRepository({
     @required Database database,
     @required NiceClient client,
+    @required TimeKeeper keeper,
   })  : this._db = database,
-        this._client = client;
+        this._client = client,
+        this._keeper = keeper;
 
   final Database _db;
   final NiceClient _client;
+  final TimeKeeper _keeper;
   List<Contact> _cache = [];
 
   Future<List<Contact>> get contacts async {
     if (_cache.isEmpty) {
       await _populateCache();
+    }
+
+    if (_cache.isEmpty || await _keeper.isDue(PrefKeys.contactsRefresh)) {
+      await refresh();
     }
 
     return _cache;
@@ -54,6 +63,8 @@ class ContactRepository extends SimpleRepository {
         ]);
       }
     });
+
+    await _keeper.reset(PrefKeys.contactsRefresh);
 
     await _populateCache();
   }

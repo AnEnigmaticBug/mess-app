@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:messapp/notice/notice.dart';
 import 'package:messapp/util/http_exceptions.dart';
+import 'package:messapp/util/pref_keys.dart';
 import 'package:messapp/util/simple_repository.dart';
+import 'package:messapp/util/time_keeper.dart';
 import 'package:meta/meta.dart';
 import 'package:nice/nice.dart';
 import 'package:sqflite/sqflite.dart';
@@ -11,20 +13,25 @@ class NoticeRepository extends SimpleRepository {
   NoticeRepository({
     @required Database database,
     @required NiceClient client,
+    @required TimeKeeper keeper,
   })  : this._db = database,
-        this._client = client;
+        this._client = client,
+        this._keeper = keeper;
 
-  Database _db;
-  NiceClient _client;
+  final Database _db;
+  final NiceClient _client;
+  final TimeKeeper _keeper;
   List<Notice> _cache = [];
 
   Future<List<Notice>> get notices async {
-    if (_cache.isNotEmpty) {
-      return _cache;
+    if (_cache.isEmpty) {
+      await _getCache();
     }
 
-    await refresh();
-    await _getCache();
+    if (_cache.isEmpty || await _keeper.isDue(PrefKeys.noticesRefresh)) {
+      await refresh();
+    }
+
     return _cache;
   }
 
@@ -55,6 +62,8 @@ class NoticeRepository extends SimpleRepository {
         ]);
       }
     });
+
+    await _keeper.reset(PrefKeys.noticesRefresh);
 
     await _getCache();
   }

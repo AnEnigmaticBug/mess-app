@@ -4,7 +4,9 @@ import 'package:messapp/grubs/grub_details.dart';
 import 'package:messapp/grubs/grub_listing.dart';
 import 'package:messapp/util/date.dart';
 import 'package:messapp/util/http_exceptions.dart';
+import 'package:messapp/util/pref_keys.dart';
 import 'package:messapp/util/simple_repository.dart';
+import 'package:messapp/util/time_keeper.dart';
 import 'package:meta/meta.dart';
 import 'package:nice/nice.dart';
 import 'package:sqflite/sqflite.dart';
@@ -13,19 +15,25 @@ class GrubRepository extends SimpleRepository {
   GrubRepository({
     @required Database database,
     @required NiceClient client,
+    @required TimeKeeper keeper,
   })  : this._db = database,
-        this._client = client;
+        this._client = client,
+        this._keeper = keeper;
 
   final Database _db;
   final NiceClient _client;
+  final TimeKeeper _keeper;
   List<GrubListing> _cache = [];
 
   Future<List<GrubListing>> get grubListings async {
-    if (_cache.isNotEmpty) {
-      return _cache;
+    if (_cache.isEmpty) {
+      await _populateCache();
     }
 
-    await _populateCache();
+    if (_cache.isEmpty || await _keeper.isDue(PrefKeys.grubsRefresh)) {
+      await refresh();
+    }
+
     return _cache;
   }
 
@@ -230,6 +238,8 @@ class GrubRepository extends SimpleRepository {
         ]);
       }
     });
+
+    await _keeper.reset(PrefKeys.grubsRefresh);
 
     await _populateCache();
   }
