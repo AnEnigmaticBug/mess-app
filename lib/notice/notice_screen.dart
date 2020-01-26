@@ -119,9 +119,9 @@ class NoticeScreen extends StatelessWidget {
                                 Text(
                                   state.data[position].body,
                                   style: TextStyle(
-                                      fontFamily: 'Quicksand',
-                                      fontSize: 12.0,
-                                      color: AppColors.textDark),
+                                    fontFamily: 'Quicksand',
+                                    fontSize: 12.0,
+                                    color: AppColors.textDark
                                   ),
                                 )
                               ],
