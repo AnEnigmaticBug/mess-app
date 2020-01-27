@@ -42,22 +42,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-//<<<<<<< HEAD
-//  final db = await databaseInstance('revamp.db');
-//  final prefs = await SharedPreferences.getInstance();
-//  final client = NiceClient(
+
 ////    http://142.93.213.45/api
 //    baseUrl: 'http://ssmsbitspilani.pythonanywhere.com/api',
-//    headers: {'Content-Type': 'application/json'},
-//  );
-//
-//  final loginrepository = LoginRepository(preferences: prefs, client: client);
-//  final grubRepository = GrubRepository(database: db, client: client);
-//  final menuRepository = MenuRepository(database: db, client: client);
-//  final issueRepository = IssueRepository(database: db, client: client);
-//  final noticeRepository = NoticeRepository(database: db, client: client);
-//  final contactRepository = ContactRepository(database: db, client: client);
-
 
   Crashlytics.instance.enableInDevMode = false;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
@@ -71,7 +58,7 @@ void main() async {
     );
     final analytics = FirebaseAnalytics();
 
-    final loginrepository = LoginRepository(preferences: prefs, client: client);
+    final loginRepository = LoginRepository(preferences: prefs, client: client);
     final grubRepository = GrubRepository(database: db, client: client);
     final menuRepository = MenuRepository(database: db, client: client);
     final issueRepository = IssueRepository(database: db, client: client);
@@ -90,45 +77,23 @@ void main() async {
     if (prefs.containsKey(PrefKeys.jwt)) {
       client.headers.addAll({'Authorization': prefs.getString(PrefKeys.jwt)});
 
-//<<<<<<< HEAD
-//    runApp(MessApp(
-//      initialRoute: '/',
-//      loginRepository: loginrepository,
-//      grubRepository: grubRepository,
-//      menuRepository: menuRepository,
-//      issueRepository: issueRepository,
-//      noticeRepository: noticeRepository,
-//      contactRepository: contactRepository,
-//      profileRepository: profileRepository,
-//    ));
-//  } else {
-//    runApp(MessApp(
-//      initialRoute: '/login',
-//      loginRepository: loginrepository,
-//      grubRepository: grubRepository,
-//      menuRepository: menuRepository,
-//      issueRepository: issueRepository,
-//      noticeRepository: noticeRepository,
-//      contactRepository: contactRepository,
-//      profileRepository: profileRepository,
-//    ));
-//  }
-//=======
+
       runApp(MessApp(
         initialRoute: '/',
         analytics: analytics,
-        loginRepository: loginrepository,
+        loginRepository: loginRepository,
         grubRepository: grubRepository,
         menuRepository: menuRepository,
         issueRepository: issueRepository,
         noticeRepository: noticeRepository,
         contactRepository: contactRepository,
+        profileRepository: profileRepository,
       ));
     } else {
       runApp(MessApp(
         initialRoute: '/login',
         analytics: analytics,
-        loginRepository: loginrepository,
+        loginRepository: loginRepository,
         grubRepository: grubRepository,
         menuRepository: menuRepository,
         issueRepository: issueRepository,

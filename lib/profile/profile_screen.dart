@@ -9,6 +9,7 @@ import 'package:messapp/util/simple_presenter.dart';
 import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class ProfileScreen extends StatelessWidget{
   @override
@@ -65,6 +66,7 @@ class ProfileScreen extends StatelessWidget{
                                   Text(((state as Success).data as Profile).bitsId)
                                 ],
                               ),
+                              Spacer(),
                               Column(
                                 children: <Widget> [
                                   Text("Hostel Room"),
@@ -88,10 +90,16 @@ class ProfileScreen extends StatelessWidget{
                       ),
                       child: Column(
                         children: <Widget>[
+                          QrImage(
+                            data: ((state as Success).data as Profile).qrCode,
+                            version: QrVersions.auto,
+                            size: 200.0,
+                          ),
                           RaisedButton(
                             onPressed: () async {
                               await presenter.refreshQr();
                             },
+                            child: Text("Refresh"),
                           )
                         ],
                       ),
@@ -100,7 +108,9 @@ class ProfileScreen extends StatelessWidget{
                     RaisedButton(
                       onPressed: () async {
                         await presenter.logout();
+                        //Navigation
                       },
+                      child: Text("Logout"),
                     ),
                     SizedBox(
                       height: 10.0,

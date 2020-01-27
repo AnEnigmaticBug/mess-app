@@ -33,7 +33,6 @@ class ProfilePresenter extends ChangeNotifier{
     _state = Loading();
     notifyListeners();
     await _repo.logout();
-
   }
 
   Future<void> restart() async {
