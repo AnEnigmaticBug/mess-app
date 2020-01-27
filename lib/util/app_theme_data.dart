@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:messapp/util/app_colors.dart';
 
 final appThemeData = ThemeData(
+  accentColor: Color(0xFF766B6B),
   appBarTheme: AppBarTheme(color: AppColors.appBarBackground, elevation: 0.0),
   fontFamily: 'Quicksand',
   textTheme: TextTheme(

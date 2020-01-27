@@ -185,11 +185,11 @@ class _IssueEntryState extends State<_IssueEntry> {
 
     try {
       await Provider.of<IssueRepository>(context).createIssue(title);
-      'Issue created successfully'.showSnackBar(context);
+      Navigator.of(context).pop();
+      Navigator.of(context).pop(true);
     } on Exception {
       'Could not create issue....'.showSnackBar(context);
-    } finally {
-      Navigator.pop(context);
+      Navigator.of(context).pop();
     }
   }
 }
