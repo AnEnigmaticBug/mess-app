@@ -35,6 +35,7 @@ import 'package:messapp/util/app_theme_data.dart';
 import 'package:messapp/util/database_helper.dart';
 import 'package:messapp/util/pref_keys.dart';
 import 'package:messapp/util/simple_presenter.dart';
+import 'package:messapp/util/time_keeper.dart';
 import 'package:nice/nice.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,15 +57,46 @@ void main() async {
       baseUrl: 'http://142.93.213.45/api',
       headers: {'Content-Type': 'application/json'},
     );
+    final keeper = TimeKeeper(
+      durations: {
+        PrefKeys.contactsRefresh: Duration(days: 30),
+        PrefKeys.grubsRefresh: Duration(days: 3),
+        PrefKeys.issuesRefresh: Duration(days: 1),
+        PrefKeys.noticesRefresh: Duration(days: 2),
+        PrefKeys.ratingsPush: Duration(days: 5),
+      },
+      preferences: prefs,
+    );
     final analytics = FirebaseAnalytics();
 
+
     final loginRepository = LoginRepository(preferences: prefs, client: client);
-    final grubRepository = GrubRepository(database: db, client: client);
-    final menuRepository = MenuRepository(database: db, client: client);
-    final issueRepository = IssueRepository(database: db, client: client);
-    final noticeRepository = NoticeRepository(database: db, client: client);
-    final contactRepository = ContactRepository(database: db, client: client);
     final profileRepository = ProfileRepository(preferences: prefs, client: client);
+    final grubRepository = GrubRepository(
+      database: db,
+      client: client,
+      keeper: keeper,
+    );
+    final menuRepository = MenuRepository(
+      database: db,
+      client: client,
+      keeper: keeper,
+    );
+    final issueRepository = IssueRepository(
+      database: db,
+      client: client,
+      keeper: keeper,
+    );
+    final noticeRepository = NoticeRepository(
+      database: db,
+      client: client,
+      keeper: keeper,
+    );
+    final contactRepository = ContactRepository(
+      database: db,
+      client: client,
+      keeper: keeper,
+    );
 
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
