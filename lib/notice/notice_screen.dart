@@ -38,7 +38,10 @@ class NoticeScreen extends StatelessWidget {
             }
 
             return RefreshIndicator(
-              child: ListView.builder(
+              child: ListView.separated(
+                separatorBuilder: (_, __) => SizedBox(
+                  height: 12.0,
+                ),
                 padding: const EdgeInsets.all(12.0),
                 itemCount: state.data.length,
                 itemBuilder: (context, position) {
@@ -56,86 +59,62 @@ class NoticeScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Row(
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                state.data[position].heading,
-                                style: TextStyle(
-                                    fontFamily: 'Quicksand',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16.0,
-                                    color: AppColors.textDark),
-                                maxLines: 2,
-                              ),
-                              SizedBox(
-                                height: 12.0,
-                              ),
-                              Text(
-                                state.data[position].startDate,
-                                style: TextStyle(
-                                    fontFamily: 'Quicksand',
-                                    fontSize: 12.0,
-                                    color: AppColors.textDark),
-                              )
-                            ],
-                          ),
-                          Spacer(),
-                          Column(
-                            children: <Widget>[
-                              _criticalIcon(state.data[position].isCritical)
-                            ],
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          )
-                        ],
-                      ),
-                    ),
-                    onTap: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (context) => Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 Text(
                                   state.data[position].heading,
                                   style: TextStyle(
-                                      fontFamily: 'Quicksand',
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w600,
                                       fontSize: 16.0,
                                       color: AppColors.textDark),
+                                  maxLines: 2,
+                                ),
+                                SizedBox(
+                                  height: 12.0,
                                 ),
                                 Text(
                                   state.data[position].startDate,
                                   style: TextStyle(
-                                      fontFamily: 'Quicksand',
                                       fontSize: 12.0,
                                       color: AppColors.textDark),
-                                ),
-                                Text(
-                                  state.data[position].body,
-                                  style: TextStyle(
-                                    fontFamily: 'Quicksand',
-                                    fontSize: 12.0,
-                                    color: AppColors.textDark
-                                  ),
                                 )
                               ],
                             ),
-                          ));
+                            Spacer(),
+                            Column(
+                              children: <Widget>[
+                                _CriticalIcon(state.data[position].isCritical)
+                              ],
+                            ),
+                            SizedBox(
+                              width: 8.0,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (_) =>
+                            _NoticeBottomsheet(notice: state.data[position]),
+                      );
                     },
                   );
                 },
               ),
               onRefresh: () async {
-                try{
-                  final presenter = Provider.of<SimplePresenter<NoticeRepository, List<Notice>>>(context);
+                try {
+                  final presenter = Provider.of<
+                      SimplePresenter<NoticeRepository, List<Notice>>>(context);
                   await presenter.refresh();
-                }on Exception catch (e) {
+                } on Exception catch (e) {
                   e.toString().showSnackBar(context);
                 }
               },
@@ -154,7 +133,7 @@ class NoticeScreen extends StatelessWidget {
   }
 }
 
-Widget _criticalIcon(int isCritical) {
+Widget _CriticalIcon(int isCritical) {
   if (isCritical == 1)
     return Icon(
       AppIcons.star,
@@ -162,4 +141,43 @@ Widget _criticalIcon(int isCritical) {
     );
   else
     return SizedBox(width: 1.0, height: 1.0);
+}
+
+class _NoticeBottomsheet extends StatelessWidget {
+  const _NoticeBottomsheet({
+    @required this.notice,
+    Key key,
+  }) : super(key: key);
+
+  final Notice notice;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            notice.heading,
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16.0,
+                color: AppColors.textDark),
+          ),
+          Text(
+            notice.startDate,
+            style: TextStyle(
+                fontSize: 12.0,
+                color: AppColors.textDark),
+          ),
+          Text(
+            notice.body,
+            style: TextStyle(
+                fontSize: 12.0,
+                color: AppColors.textDark),
+          )
+        ],
+      ),
+    );
+  }
 }

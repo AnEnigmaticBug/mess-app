@@ -20,10 +20,10 @@ class ProfileRepository {
 
   Future<Profile> get profileInfo async {
     return Profile(
-        name: await _sharedPreferences.get(PrefKeys.userName) ?? "Error getting Name",
-        bitsId: await _sharedPreferences.get(PrefKeys.bitsId) ?? "Error getting ID",
-        room: await _sharedPreferences.get(PrefKeys.userRoom) ?? "Error getting room",
-        qrCode: await _sharedPreferences.get(PrefKeys.qrCode) ?? "Error"
+        name: await _sharedPreferences.get(PrefKeys.userName) ?? 'Error getting Name',
+        bitsId: await _sharedPreferences.get(PrefKeys.bitsId) ?? 'Error getting ID',
+        room: await _sharedPreferences.get(PrefKeys.userRoom) ?? 'Error getting room',
+        qrCode: await _sharedPreferences.get(PrefKeys.qrCode) ?? 'Error'
     );
   }
 
@@ -34,13 +34,12 @@ class ProfileRepository {
       return response.toException();
     }
 
-    final qrJson = json.decode(response.body) as Map<String, String>;
+    final qrJson = json.decode(response.body);
     await _sharedPreferences.setString(PrefKeys.qrCode, qrJson['QR']);
 
   }
 
   Future<void> logout() async {
-    //use _signIn from loginRepository
     await _sharedPreferences.clear();
   }
 

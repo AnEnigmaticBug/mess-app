@@ -54,7 +54,7 @@ void main() async {
     final db = await databaseInstance('revamp.db');
     final prefs = await SharedPreferences.getInstance();
     final client = NiceClient(
-      baseUrl: 'http://142.93.213.45/api',
+      baseUrl: 'http://ssmsbitspilani.pythonanywhere.com/api',
       headers: {'Content-Type': 'application/json'},
     );
     final keeper = TimeKeeper(

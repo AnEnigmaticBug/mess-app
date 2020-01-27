@@ -3,12 +3,14 @@ import 'package:messapp/profile/profile.dart';
 import 'package:messapp/profile/profile_repository.dart';
 import 'package:messapp/util/ui_state.dart';
 
-class ProfilePresenter extends ChangeNotifier{
-
+class ProfilePresenter extends ChangeNotifier {
   final ProfileRepository _repo;
   UiState<Profile> _state = Loading();
 
-  ProfilePresenter(ProfileRepository repository): this._repo = repository;
+  ProfilePresenter(ProfileRepository repository) : this._repo = repository {
+    notifyListeners();
+    getProfile();
+  }
 
   UiState<Profile> get state => _state;
 
@@ -45,5 +47,4 @@ class ProfilePresenter extends ChangeNotifier{
       notifyListeners();
     }
   }
-
 }
