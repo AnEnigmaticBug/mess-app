@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:messapp/util/date.dart';
 
 class Notice {
   const Notice({
@@ -12,6 +13,6 @@ class Notice {
   final int id;
   final String heading;
   final String body;
-  final String startDate;
+  final Date startDate;
   final int isCritical;
 }

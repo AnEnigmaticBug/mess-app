@@ -3,6 +3,7 @@ import 'package:messapp/notice/notice.dart';
 import 'package:messapp/notice/notice_repository.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/app_icons.dart';
+import 'package:messapp/util/date.dart';
 import 'package:messapp/util/simple_presenter.dart';
 import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
@@ -39,75 +40,10 @@ class NoticeScreen extends StatelessWidget {
 
             return RefreshIndicator(
               child: ListView.separated(
-                separatorBuilder: (_, __) => SizedBox(
-                  height: 12.0,
-                ),
-                padding: const EdgeInsets.all(12.0),
+                separatorBuilder: (_, __) => SizedBox(height: 12.0),
+                padding: const EdgeInsets.fromLTRB(20.0, 24.0, 20.0, 100.0),
                 itemCount: state.data.length,
-                itemBuilder: (context, position) {
-                  return GestureDetector(
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.shadow,
-                            offset: Offset(3.0, 8.0),
-                            blurRadius: 10.0,
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  state.data[position].heading,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16.0,
-                                      color: AppColors.textDark),
-                                ),
-                                SizedBox(
-                                  height: 12.0,
-                                ),
-                                Text(
-                                  state.data[position].startDate,
-                                  style: TextStyle(
-                                      fontSize: 12.0,
-                                      color: AppColors.textDark),
-                                )
-                              ],
-                            ),
-                            Spacer(),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                _CriticalIcon(state.data[position].isCritical)
-                              ],
-                            ),
-                            SizedBox(
-                              width: 8.0,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) =>
-                            _NoticeBottomsheet(notice: state.data[position]),
-                      );
-                    },
-                  );
-                },
+                itemBuilder: (_, i) => _NoticeTile(notice: state.data[i]),
               ),
               onRefresh: () async {
                 try {
@@ -133,14 +69,90 @@ class NoticeScreen extends StatelessWidget {
   }
 }
 
-Widget _CriticalIcon(int isCritical) {
-  if (isCritical == 1)
-    return Icon(
-      AppIcons.star,
-      color: AppColors.starColor,
+class _NoticeTile extends StatelessWidget {
+  const _NoticeTile({
+    @required this.notice,
+    Key key,
+  }) : super(key: key);
+
+  final Notice notice;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadow,
+              offset: Offset(3.0, 8.0),
+              blurRadius: 10.0,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 8,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Heading(value: notice.heading),
+                  SizedBox(height: 12.0),
+                  Text(
+                    _prettify(notice.startDate),
+                    style: TextStyle(fontSize: 12.0, color: AppColors.textDark),
+                  )
+                ],
+              ),
+            ),
+            if (notice.isCritical == 1)
+              Icon(
+                AppIcons.star,
+                color: AppColors.starColor,
+              ),
+          ],
+        ),
+      ),
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (_) => _NoticeBottomsheet(notice: notice),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(8.0),
+            ),
+          ),
+        );
+      },
     );
-  else
-    return SizedBox(width: 1.0, height: 1.0);
+  }
+}
+
+class _Heading extends StatelessWidget {
+  const _Heading({
+    @required this.value,
+    Key key,
+  }) : super(key: key);
+
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      value,
+      style: TextStyle(
+        fontWeight: FontWeight.w500,
+        fontSize: 16.0,
+        color: AppColors.textDark,
+      ),
+      maxLines: 2,
+    );
+  }
 }
 
 class _NoticeBottomsheet extends StatelessWidget {
@@ -154,30 +166,51 @@ class _NoticeBottomsheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          SizedBox(height: 20.0),
           Text(
             notice.heading,
             style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                color: AppColors.textDark),
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              color: AppColors.textDark,
+            ),
+            textAlign: TextAlign.center,
           ),
+          SizedBox(height: 12.0),
           Text(
-            notice.startDate,
+            _prettify(notice.startDate),
             style: TextStyle(
-                fontSize: 12.0,
-                color: AppColors.textDark),
+              fontSize: 12.0,
+              color: AppColors.textDark,
+            ),
           ),
-          Text(
-            notice.body,
-            style: TextStyle(
-                fontSize: 12.0,
-                color: AppColors.textDark),
-          )
+          SizedBox(height: 30.0),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.only(bottom: 80.0),
+              children: [
+                Text(
+                  notice.body,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14.0,
+                    height: 1.5,
+                    color: AppColors.textDark,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
+}
+
+String _prettify(Date date) {
+  return '${DateFormatter(date).month} ${date.day}';
 }

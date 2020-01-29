@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:messapp/notice/notice.dart';
+import 'package:messapp/util/date.dart';
 import 'package:messapp/util/http_exceptions.dart';
 import 'package:messapp/util/pref_keys.dart';
 import 'package:messapp/util/simple_repository.dart';
@@ -85,92 +86,90 @@ class NoticeRepository extends SimpleRepository {
     notices.clear();
 
     for (var row in await _dbNotices) {
-      String date = "";
 
-      switch (row['startDate'].toString().substring(5, 7)) {
-        case '01':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '02':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '03':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '04':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '05':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '06':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '07':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '08':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '09':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '10':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '11':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        case '12':
-          {
-            date = 'Jan ${row['startDate'].toString().substring(8)}';
-          }
-          break;
-
-        default:
-          {
-            date = row['startDate'].toString().substring(5);
-          }
-      }
+//      switch (row['startDate'].toString().substring(5, 7)) {
+//        case '01':
+//          {
+//            date = 'January ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '02':
+//          {
+//            date = 'February ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '03':
+//          {
+//            date = 'March ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '04':
+//          {
+//            date = 'April ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '05':
+//          {
+//            date = 'May ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '06':
+//          {
+//            date = 'June ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '07':
+//          {
+//            date = 'July ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '08':
+//          {
+//            date = 'August ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '09':
+//          {
+//            date = 'September ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '10':
+//          {
+//            date = 'October ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '11':
+//          {
+//            date = 'November ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        case '12':
+//          {
+//            date = 'December ${row['startDate'].toString().substring(8)}';
+//          }
+//          break;
+//
+//        default:
+//          {
+//            date = row['startDate'].toString().substring(5);
+//          }
 
       notices.add(Notice(
           id: row['id'],
           body: row['body'],
           heading: row['heading'],
-          startDate: date,
+          startDate: Date.parse(row['startDate']),
           isCritical: row['isCritical']));
     }
   }
