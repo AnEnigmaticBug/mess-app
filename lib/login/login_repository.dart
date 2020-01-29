@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:messapp/util/http_exceptions.dart';
 import 'package:messapp/util/pref_keys.dart';
@@ -11,11 +12,14 @@ class LoginRepository {
   LoginRepository({
     @required SharedPreferences preferences,
     @required NiceClient client,
+    @required FirebaseMessaging messaging,
   })  : this._sPrefs = preferences,
-        this._client = client;
+        this._client = client,
+        this._messaging = messaging;
 
   final SharedPreferences _sPrefs;
   final NiceClient _client;
+  final FirebaseMessaging _messaging;
   final _signIn = GoogleSignIn(
     scopes: ['email'],
     hostedDomain: 'pilani.bits-pilani.ac.in',
@@ -28,7 +32,12 @@ class LoginRepository {
   }
 
   Future<void> login(String idToken) async {
-    final reqBody = json.encode({'id_token': idToken});
+    await _messaging.subscribeToTopic('notices');
+
+    final reqBody = json.encode({
+      'id_token': idToken,
+      'reg_token': await _messaging.getToken(),
+    });
     final res = await _client.post('/login', body: reqBody);
 
     if (res.statusCode != 200) {
