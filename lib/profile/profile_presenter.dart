@@ -1,34 +1,31 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:messapp/profile/profile.dart';
 import 'package:messapp/profile/profile_repository.dart';
 import 'package:messapp/util/ui_state.dart';
 
 class ProfilePresenter extends ChangeNotifier {
+  ProfilePresenter(ProfileRepository repository) : this._repo = repository {
+    restart();
+  }
+
   final ProfileRepository _repo;
   UiState<Profile> _state = Loading();
 
-  ProfilePresenter(ProfileRepository repository) : this._repo = repository {
-    notifyListeners();
-    getProfile();
-  }
-
   UiState<Profile> get state => _state;
 
-  void getProfile() {
-    _repo.profileInfo.then((profile) {
-      _state = Success(profile);
-      notifyListeners();
-    }).catchError((error) {
-      _state = Failure(error.toString());
-      notifyListeners();
-    });
-  }
-
   Future<void> refreshQr() async {
+    final original = state;
     _state = Loading();
     notifyListeners();
-    await _repo.refreshQr();
-    getProfile();
+
+    try {
+      await _repo.refreshQr();
+      await restart();
+    } on Exception catch (e) {
+      _state = original;
+      notifyListeners();
+      throw e;
+    }
   }
 
   Future<void> logout() async {
@@ -41,7 +38,8 @@ class ProfilePresenter extends ChangeNotifier {
     _state = Loading();
     notifyListeners();
     try {
-      getProfile();
+      _state = Success(await _repo.profile);
+      notifyListeners();
     } on Exception catch (e) {
       _state = Failure(e.toString());
       notifyListeners();
