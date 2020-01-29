@@ -1,16 +1,25 @@
-# messapp
+# SSMS Revamped
 
-A new Flutter project.
+It is the successor to the original 'SSMS Official' app I released 1 year ago. [Here](https://github.com/AnEnigmaticBug/SSMS-App)'s the link to the old app's code. Everything about the new app has been completely re-done. It features a much needed UI refresh. New features like a fully featured "Issues" section have been implemented. Push notifications have also been added this time :)
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+* View your profile. It includes a QR code which can be used for entry into grubs.
+* View the grub offerings, sign-up for them or cancel an existing signing in a beautiful and fast interface.
+* View the fortnight's mess menu. You can rate individual food items to provide data which can be used to improve the menu selection process.
+* View and create issues specific to your messes. Upvote the issues you find helpful. Flag those which you feel are not on topic.
+* View mess-specific notices. The notices are classified as critical/non-critical for ease of use.
+* See the list of GC members with the ability to call them.
+* View the list of developers ;)
 
-A few resources to get you started if this is your first Flutter project:
+## About the Code
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+The app has been made using Flutter. It uses the Provider + ChangeNotifier combo for state-management. So, far it has been really convenient to use!
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+
+Visit [this](https://imgur.com/a/BfpWV61) link to see the screenshots. The screenshots are taken on a Redmi Note 7 Pro. The aspect ratio is 18:9.
+
+## Credits
+
+The app was blessed with it's elegant design by [Pratik Bachhav](https://www.dribbble.com/pratik_bachhav). I and [Suyash Soni](https://github.com/99suyashsoni) worked on the app itself. The backend was extended by [Himanshu Pandey](https://www.github.com/coderjedi), [Naman Goenka](https://www.github.com/naman-32) and [Akshay Mittal](https://www.github.com/Ak-shay). Last but definitely not the least, the original backend was made by [Divyam Goel](https://github.com/divyam-goel) and [Raghav Arora](https://github.com/RAraghavarora).
