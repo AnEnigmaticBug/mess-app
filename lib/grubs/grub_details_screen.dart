@@ -112,7 +112,7 @@ class GrubDetailsScreen extends StatelessWidget {
 
     try {
       await presenter.signUp(offeringId: offeringId);
-      'Success'.showSnackBar(context);
+      'You have been signed up!'.showSnackBar(context);
     } on Exception catch (e) {
       e.toString().showSnackBar(context);
     }
@@ -139,7 +139,7 @@ class GrubDetailsScreen extends StatelessWidget {
 
     try {
       await presenter.cancel();
-      'Success'.showSnackBar(context);
+      'Your ticket has been cancelled'.showSnackBar(context);
     } on Exception catch (e) {
       e.toString().showSnackBar(context);
     }
@@ -479,7 +479,7 @@ class _CancelSheet extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(height: 24.0),
+        SizedBox(height: 40.0),
         Text(
           'Do you wish to cancel your signing?',
           style: TextStyle(
@@ -488,7 +488,7 @@ class _CancelSheet extends StatelessWidget {
             color: AppColors.textDark,
           ),
         ),
-        SizedBox(height: 40.0),
+        SizedBox(height: 32.0),
         RaisedButton(
           color: Color(0xFF766B6B),
           shape: RoundedRectangleBorder(

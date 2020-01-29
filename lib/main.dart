@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:messapp/about/about_screen.dart';
@@ -43,7 +44,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-
 ////    http://142.93.213.45/api
 //    baseUrl: 'http://ssmsbitspilani.pythonanywhere.com/api',
 
@@ -68,10 +68,17 @@ void main() async {
       preferences: prefs,
     );
     final analytics = FirebaseAnalytics();
+    final messaging = FirebaseMessaging();
 
+    await messaging.requestNotificationPermissions(IosNotificationSettings());
 
-    final loginRepository = LoginRepository(preferences: prefs, client: client);
-    final profileRepository = ProfileRepository(preferences: prefs, client: client);
+    final loginRepository = LoginRepository(
+      preferences: prefs,
+      client: client,
+      messaging: messaging,
+    );
+    final profileRepository =
+        ProfileRepository(preferences: prefs, client: client);
     final grubRepository = GrubRepository(
       database: db,
       client: client,
@@ -108,7 +115,6 @@ void main() async {
 
     if (prefs.containsKey(PrefKeys.jwt)) {
       client.headers.addAll({'Authorization': prefs.getString(PrefKeys.jwt)});
-
 
       runApp(MessApp(
         initialRoute: '/',

@@ -144,7 +144,7 @@ class FAB extends StatelessWidget {
       child: FlatButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         color: Color(0xFFFFE0A4),
-        child: Text(label),
+        child: Text(label, style: TextStyle(fontWeight: FontWeight.w600)),
         textColor: AppColors.textDark,
         onPressed: onPressed,
       ),
@@ -176,7 +176,7 @@ class Button extends StatelessWidget {
       child: FlatButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         color: Color(0xFFFFE0A4),
-        child: Text(label),
+        child: Text(label, style: TextStyle(fontWeight: FontWeight.w600)),
         textColor: AppColors.textDark,
         onPressed: onPressed,
       ),
@@ -285,7 +285,7 @@ class _BottomNav extends StatelessWidget {
           isSelected: currentIndex == 2,
         ),
         _bottomNavItem(
-          title: 'Feedback',
+          title: 'Issues',
           selectedIconData: AppIcons.feedback_outlined,
           unselectedIconData: AppIcons.feedback_solid,
           isSelected: currentIndex == 3,

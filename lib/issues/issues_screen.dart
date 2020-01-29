@@ -60,7 +60,11 @@ class IssuesScreen extends StatelessWidget {
                   label: '+ Create new issue',
                   onPressed: () async {
                     try {
-                      await Navigator.pushNamed(context, '/create-issue');
+                      final wasSuccessful =
+                          await Navigator.pushNamed(context, '/create-issue');
+                      if (wasSuccessful != null && wasSuccessful) {
+                        'Issue created successfully'.showSnackBar(context);
+                      }
                       await presenter.restart();
                     } on Exception {
                       'Please refresh the issues data'.showSnackBar(context);

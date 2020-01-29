@@ -291,8 +291,8 @@ class _MealName extends StatelessWidget {
     return Text(
       meal.name,
       style: TextStyle(
-        fontSize: 17.0,
-        fontFamily: 'LibreBaskerville',
+        fontSize: 16.0,
+        fontWeight: FontWeight.w600,
         color: Colors.white.withOpacity(0.75),
       ),
     );
