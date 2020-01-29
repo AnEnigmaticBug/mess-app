@@ -73,7 +73,6 @@ class NoticeScreen extends StatelessWidget {
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16.0,
                                       color: AppColors.textDark),
-                                  maxLines: 2,
                                 ),
                                 SizedBox(
                                   height: 12.0,
@@ -88,6 +87,7 @@ class NoticeScreen extends StatelessWidget {
                             ),
                             Spacer(),
                             Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 _CriticalIcon(state.data[position].isCritical)
                               ],
