@@ -27,6 +27,10 @@ import 'package:messapp/more/more_screen.dart';
 import 'package:messapp/notice/notice.dart';
 import 'package:messapp/notice/notice_repository.dart';
 import 'package:messapp/notice/notice_screen.dart';
+import 'package:messapp/profile/profile.dart';
+import 'package:messapp/profile/profile_presenter.dart';
+import 'package:messapp/profile/profile_repository.dart';
+import 'package:messapp/profile/profile_screen.dart';
 import 'package:messapp/util/app_theme_data.dart';
 import 'package:messapp/util/database_helper.dart';
 import 'package:messapp/util/pref_keys.dart';
@@ -39,6 +43,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+
+////    http://142.93.213.45/api
+//    baseUrl: 'http://ssmsbitspilani.pythonanywhere.com/api',
+
   Crashlytics.instance.enableInDevMode = false;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
@@ -46,7 +54,7 @@ void main() async {
     final db = await databaseInstance('revamp.db');
     final prefs = await SharedPreferences.getInstance();
     final client = NiceClient(
-      baseUrl: 'http://142.93.213.45/api',
+      baseUrl: 'http://ssmsbitspilani.pythonanywhere.com/api',
       headers: {'Content-Type': 'application/json'},
     );
     final keeper = TimeKeeper(
@@ -61,7 +69,9 @@ void main() async {
     );
     final analytics = FirebaseAnalytics();
 
-    final loginrepository = LoginRepository(preferences: prefs, client: client);
+
+    final loginRepository = LoginRepository(preferences: prefs, client: client);
+    final profileRepository = ProfileRepository(preferences: prefs, client: client);
     final grubRepository = GrubRepository(
       database: db,
       client: client,
@@ -99,26 +109,29 @@ void main() async {
     if (prefs.containsKey(PrefKeys.jwt)) {
       client.headers.addAll({'Authorization': prefs.getString(PrefKeys.jwt)});
 
+
       runApp(MessApp(
         initialRoute: '/',
         analytics: analytics,
-        loginRepository: loginrepository,
+        loginRepository: loginRepository,
         grubRepository: grubRepository,
         menuRepository: menuRepository,
         issueRepository: issueRepository,
         noticeRepository: noticeRepository,
         contactRepository: contactRepository,
+        profileRepository: profileRepository,
       ));
     } else {
       runApp(MessApp(
         initialRoute: '/login',
         analytics: analytics,
-        loginRepository: loginrepository,
+        loginRepository: loginRepository,
         grubRepository: grubRepository,
         menuRepository: menuRepository,
         issueRepository: issueRepository,
         noticeRepository: noticeRepository,
         contactRepository: contactRepository,
+        profileRepository: profileRepository,
       ));
     }
   }, onError: Crashlytics.instance.recordError);
@@ -134,6 +147,7 @@ class MessApp extends StatelessWidget {
     @required this.issueRepository,
     @required this.noticeRepository,
     @required this.contactRepository,
+    @required this.profileRepository,
     Key key,
   }) : super(key: key);
 
@@ -145,6 +159,7 @@ class MessApp extends StatelessWidget {
   final IssueRepository issueRepository;
   final NoticeRepository noticeRepository;
   final ContactRepository contactRepository;
+  final ProfileRepository profileRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -256,6 +271,12 @@ class MessApp extends StatelessWidget {
             child: NoticeScreen(),
           );
         },
+        '/profile': (context) {
+          return ChangeNotifierProvider.value(
+            value: ProfilePresenter(profileRepository),
+            child: ProfileScreen(),
+          );
+        }
       },
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: analytics),

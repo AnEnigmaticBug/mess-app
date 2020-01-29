@@ -31,6 +31,7 @@ class IssuesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SimplePresenter<IssueRepository, Data>>(
+      // ignore: missing_return
       builder: (_, presenter, __) {
         final state = presenter.state;
 
@@ -104,6 +105,7 @@ class _IssueTab<T extends Issue> extends StatelessWidget {
       child: ListView.separated(
         padding: const EdgeInsets.fromLTRB(20.0, 24.0, 20.0, 100.0),
         itemCount: issues.length,
+        // ignore: missing_return
         itemBuilder: (_, i) {
           if (issues[i] is ActiveIssue) {
             return ChangeNotifierProvider.value(

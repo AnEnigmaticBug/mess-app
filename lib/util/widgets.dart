@@ -303,6 +303,8 @@ class _BottomNav extends StatelessWidget {
         }
 
         if (i == 0) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/profile', ModalRoute.withName('/'));
         } else if (i == 1) {
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/grubs', ModalRoute.withName('/'));
