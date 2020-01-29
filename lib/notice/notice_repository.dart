@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:messapp/notice/notice.dart';
 import 'package:messapp/util/date.dart';
 import 'package:messapp/util/http_exceptions.dart';
@@ -25,7 +26,7 @@ class NoticeRepository extends SimpleRepository {
 
   Future<List<Notice>> get notices async {
     if (_cache.isEmpty) {
-      await _getCache();
+      await _populateCache();
     }
 
     if (_cache.isEmpty || await _keeper.isDue(PrefKeys.noticesRefresh)) {
@@ -46,131 +47,49 @@ class NoticeRepository extends SimpleRepository {
 
     await _db.transaction((txn) async {
       await txn.rawDelete('''
-          DELETE FROM Notices
+        DELETE
+          FROM Notices
       ''');
 
       for (var noticeJson in noticesJson) {
         await txn.rawInsert('''
-          INSERT INTO Notices (id, body, heading, startDate, endDate, noticeType)
-          VALUES (?, ?, ?, ?, ?, ?)''', [
+          INSERT
+            INTO Notices (id, body, heading, startDate, endDate, isCritical)
+          VALUES (?, ?, ?, ?, ?, ?)
+        ''', [
           noticeJson['id'],
           noticeJson['body'],
           noticeJson['heading'],
           noticeJson['start_date'],
           noticeJson['end_date'],
-          noticeJson['notice_type']
+          noticeJson['notice_type'] == 'C',
         ]);
       }
     });
 
     await _keeper.reset(PrefKeys.noticesRefresh);
 
-    await _getCache();
+    await _populateCache();
   }
 
-  Future<List<Map<String, dynamic>>> get _dbNotices async {
-    return await _db.rawQuery('''
-      SELECT id, body, heading, startDate, 
-        CASE
-          WHEN noticeType = 'C' THEN 1
-          WHEN noticeType = 'N' THEN 0
-          ELSE 0
-        END AS isCritical
-      FROM Notices
-      ORDER BY startDate
-    ''');
-  }
-
-  Future<void> _getCache() async {
+  Future<void> _populateCache() async {
     final notices = _cache;
     notices.clear();
 
-    for (var row in await _dbNotices) {
+    final rows = await _db.rawQuery('''
+      SELECT id, body, heading, startDate, isCritical
+        FROM Notices
+       ORDER BY startDate
+    ''');
 
-//      switch (row['startDate'].toString().substring(5, 7)) {
-//        case '01':
-//          {
-//            date = 'January ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '02':
-//          {
-//            date = 'February ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '03':
-//          {
-//            date = 'March ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '04':
-//          {
-//            date = 'April ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '05':
-//          {
-//            date = 'May ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '06':
-//          {
-//            date = 'June ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '07':
-//          {
-//            date = 'July ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '08':
-//          {
-//            date = 'August ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '09':
-//          {
-//            date = 'September ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '10':
-//          {
-//            date = 'October ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '11':
-//          {
-//            date = 'November ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        case '12':
-//          {
-//            date = 'December ${row['startDate'].toString().substring(8)}';
-//          }
-//          break;
-//
-//        default:
-//          {
-//            date = row['startDate'].toString().substring(5);
-//          }
-
+    for (var row in rows) {
       notices.add(Notice(
-          id: row['id'],
-          body: row['body'],
-          heading: row['heading'],
-          startDate: Date.parse(row['startDate']),
-          isCritical: row['isCritical']));
+        id: row['id'],
+        body: row['body'],
+        heading: row['heading'],
+        startDate: Date.parse(row['startDate']),
+        isCritical: row['isCritical'] == 1,
+      ));
     }
   }
 }

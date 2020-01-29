@@ -14,5 +14,5 @@ class Notice {
   final String heading;
   final String body;
   final Date startDate;
-  final int isCritical;
+  final bool isCritical;
 }

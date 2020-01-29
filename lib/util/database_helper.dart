@@ -90,7 +90,7 @@ Future<Database> databaseInstance(String dbName) async {
           heading TEXT NOT NULL,
           startDate TEXT NOT NULL,
           endDate TEXT, 
-          noticeType TEXT
+          isCritical INTEGER NOT NULL CHECK(isCritical IN (0, 1))
         )
       ''');
 

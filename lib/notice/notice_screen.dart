@@ -40,10 +40,10 @@ class NoticeScreen extends StatelessWidget {
 
             return RefreshIndicator(
               child: ListView.separated(
-                separatorBuilder: (_, __) => SizedBox(height: 12.0),
                 padding: const EdgeInsets.fromLTRB(20.0, 24.0, 20.0, 100.0),
                 itemCount: state.data.length,
                 itemBuilder: (_, i) => _NoticeTile(notice: state.data[i]),
+                separatorBuilder: (_, __) => SizedBox(height: 12.0),
               ),
               onRefresh: () async {
                 try {
@@ -96,7 +96,6 @@ class _NoticeTile extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              flex: 8,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,11 +109,8 @@ class _NoticeTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (notice.isCritical == 1)
-              Icon(
-                AppIcons.star,
-                color: AppColors.starColor,
-              ),
+            if (notice.isCritical)
+              Icon(AppIcons.star, color: AppColors.starColor),
           ],
         ),
       ),
