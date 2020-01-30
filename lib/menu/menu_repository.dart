@@ -21,6 +21,7 @@ class MenuRepository extends SimpleRepository {
         this._keeper = keeper {
     keeper.isDue(PrefKeys.ratingsPush).then((isDue) async {
       if (isDue) {
+        await _removeStaleRatings();
         await _pushRatings();
       }
     }).catchError((e) {});
@@ -177,6 +178,17 @@ class MenuRepository extends SimpleRepository {
         repository: this,
       ));
     }
+  }
+
+  Future<void> _removeStaleRatings() async {
+    await _db.rawDelete('''
+      DELETE
+        FROM DishRating
+       WHERE mealId NOT IN (
+         SELECT id
+           FROM Meal
+       )
+    ''');
   }
 
   Future<void> _pushRatings() async {
