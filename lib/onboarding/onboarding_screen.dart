@@ -39,8 +39,8 @@ class _Content extends StatefulWidget {
 }
 
 class _ContentState extends State<_Content> {
-  
   PageController _controller = PageController(initialPage: 0);
+
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
@@ -96,7 +96,10 @@ class _ContentState extends State<_Content> {
   }
 
   void _nextPage() {
-    _controller.nextPage(duration: Duration(milliseconds: 400), curve: Curves.easeOut);
+    _controller.nextPage(
+      duration: Duration(milliseconds: 400),
+      curve: Curves.easeInOutCubic,
+    );
   }
 }
 
@@ -173,13 +176,10 @@ class _OnboardingScreen extends StatelessWidget {
   }
 }
 
-class _OnboardingTile extends StatelessWidget{
-
-  const _OnboardingTile({
-    @required this.text,
-    @required this.imageAsset,
-    Key key
-  }): super(key: key);
+class _OnboardingTile extends StatelessWidget {
+  const _OnboardingTile(
+      {@required this.text, @required this.imageAsset, Key key})
+      : super(key: key);
 
   final String text;
   final String imageAsset;
