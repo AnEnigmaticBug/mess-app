@@ -28,6 +28,7 @@ import 'package:messapp/more/more_screen.dart';
 import 'package:messapp/notice/notice.dart';
 import 'package:messapp/notice/notice_repository.dart';
 import 'package:messapp/notice/notice_screen.dart';
+import 'package:messapp/onboarding/onboarding_screen.dart';
 import 'package:messapp/profile/profile_presenter.dart';
 import 'package:messapp/profile/profile_repository.dart';
 import 'package:messapp/profile/profile_screen.dart';
@@ -280,6 +281,9 @@ class MessApp extends StatelessWidget {
             value: ProfilePresenter(profileRepository),
             child: ProfileScreen(),
           );
+        },
+        '/onboarding': (context) {
+          return OnboardingScreen();
         }
       },
       navigatorObservers: [
