@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:messapp/profile/profile.dart';
 import 'package:messapp/profile/profile_repository.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/ui_state.dart';
 
 class ProfilePresenter extends ChangeNotifier {
@@ -41,7 +42,7 @@ class ProfilePresenter extends ChangeNotifier {
       _state = Success(await _repo.profile);
       notifyListeners();
     } on Exception catch (e) {
-      _state = Failure(e.toString());
+      _state = Failure(e.prettify());
       notifyListeners();
     }
   }

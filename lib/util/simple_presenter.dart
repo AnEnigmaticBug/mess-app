@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/simple_repository.dart';
 import 'package:messapp/util/ui_state.dart';
 
@@ -8,15 +9,7 @@ class SimplePresenter<R extends SimpleRepository, D> with ChangeNotifier {
     @required Future<D> Function(R) mapper,
   })  : this._repo = repository,
         this._mapper = mapper {
-    notifyListeners();
-
-    _mapper(_repo).then((data) {
-      _state = Success(data);
-      notifyListeners();
-    }).catchError((error) {
-      _state = Failure(error.toString());
-      notifyListeners();
-    });
+    restart();
   }
 
   final R _repo;
@@ -38,7 +31,7 @@ class SimplePresenter<R extends SimpleRepository, D> with ChangeNotifier {
       _state = Success(await _mapper(_repo));
       notifyListeners();
     } on Exception catch (e) {
-      _state = Failure(e.toString());
+      _state = Failure(e.prettify());
       notifyListeners();
     }
   }

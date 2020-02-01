@@ -87,7 +87,7 @@ class _ContentState extends State<_Content> {
                 await repo.login(idToken);
                 Navigator.of(context).pushReplacementNamed('/onboarding');
               } on Exception catch (e) {
-                e.toString().showSnackBar(context);
+                e.prettify().showSnackBar(context);
                 setState(() {
                   _isLoading = false;
                 });

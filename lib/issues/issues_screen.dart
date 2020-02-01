@@ -66,8 +66,8 @@ class IssuesScreen extends StatelessWidget {
                         'Issue created successfully'.showSnackBar(context);
                       }
                       await presenter.restart();
-                    } on Exception {
-                      'Please refresh the issues data'.showSnackBar(context);
+                    } on Exception catch (e) {
+                      e.prettify().showSnackBar(context);
                     }
                   },
                 );
@@ -128,7 +128,7 @@ class _IssueTab<T extends Issue> extends StatelessWidget {
               Provider.of<SimplePresenter<IssueRepository, Data>>(context);
           await presenter.refresh();
         } on Exception catch (e) {
-          e.toString().showSnackBar(context);
+          e.prettify().showSnackBar(context);
         }
       },
     );

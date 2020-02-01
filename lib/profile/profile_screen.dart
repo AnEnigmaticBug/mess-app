@@ -192,7 +192,7 @@ class _QrCard extends StatelessWidget {
               try {
                 await Provider.of<ProfilePresenter>(context).refreshQr();
               } on Exception catch (e) {
-                e.toString().showSnackBar(context);
+                e.prettify().showSnackBar(context);
               }
             },
           ),

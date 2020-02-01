@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:messapp/grubs/grub_details.dart';
 import 'package:messapp/grubs/grub_repository.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/ui_state.dart';
 
 class GrubDetailsPresenter with ChangeNotifier {
@@ -8,14 +9,7 @@ class GrubDetailsPresenter with ChangeNotifier {
     @required GrubRepository repository,
     @required this.grubId,
   }) : this._repo = repository {
-    notifyListeners();
-    _repo.grubDetails(grubId: grubId).then((details) {
-      _state = Success(details);
-      notifyListeners();
-    }).catchError((error) {
-      _state = Failure(error.toString());
-      notifyListeners();
-    });
+    restart();
   }
 
   final int grubId;
@@ -31,7 +25,7 @@ class GrubDetailsPresenter with ChangeNotifier {
       _state = Success(await _repo.grubDetails(grubId: grubId));
       notifyListeners();
     } on Exception catch (e) {
-      _state = Failure(e.toString());
+      _state = Failure(e.prettify());
       notifyListeners();
     }
   }
@@ -47,7 +41,6 @@ class GrubDetailsPresenter with ChangeNotifier {
       _state = Success(await _repo.grubDetails(grubId: grubId));
       notifyListeners();
     } on Exception catch (e) {
-      print(e.toString());
       _state = originalState;
       notifyListeners();
       throw e;

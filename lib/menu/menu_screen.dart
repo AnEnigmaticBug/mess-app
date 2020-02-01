@@ -125,7 +125,7 @@ class _MenuPage extends StatelessWidget {
                       context);
               await presenter.refresh();
             } on Exception catch (e) {
-              e.toString().showSnackBar(context);
+              e.prettify().showSnackBar(context);
             }
           },
         ),
@@ -323,7 +323,7 @@ class _DishTile extends StatelessWidget {
               try {
                 await dish.rate(rating);
               } on Exception catch (e) {
-                e.toString().showSnackBar(context);
+                e.prettify().showSnackBar(context);
               }
             },
           ),

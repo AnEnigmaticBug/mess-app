@@ -51,7 +51,7 @@ class NoticeScreen extends StatelessWidget {
                       SimplePresenter<NoticeRepository, List<Notice>>>(context);
                   await presenter.refresh();
                 } on Exception catch (e) {
-                  e.toString().showSnackBar(context);
+                  e.prettify().showSnackBar(context);
                 }
               },
             );

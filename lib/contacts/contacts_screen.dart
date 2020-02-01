@@ -37,7 +37,7 @@ class ContactsScreen extends StatelessWidget {
                 try {
                   await presenter.refresh();
                 } on Exception catch (e) {
-                  e.toString().showSnackBar(context);
+                  e.prettify().showSnackBar(context);
                 }
               },
             );

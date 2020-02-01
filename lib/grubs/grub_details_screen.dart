@@ -114,7 +114,7 @@ class GrubDetailsScreen extends StatelessWidget {
       await presenter.signUp(offeringId: offeringId);
       'You have been signed up!'.showSnackBar(context);
     } on Exception catch (e) {
-      e.toString().showSnackBar(context);
+      e.prettify().showSnackBar(context);
     }
   }
 
@@ -141,7 +141,7 @@ class GrubDetailsScreen extends StatelessWidget {
       await presenter.cancel();
       'Your ticket has been cancelled'.showSnackBar(context);
     } on Exception catch (e) {
-      e.toString().showSnackBar(context);
+      e.prettify().showSnackBar(context);
     }
   }
 }

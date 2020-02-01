@@ -3,6 +3,7 @@ import 'package:messapp/grubs/grub_listing.dart';
 import 'package:messapp/grubs/grub_repository.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/date.dart';
+import 'package:messapp/util/extensions.dart';
 import 'package:messapp/util/simple_presenter.dart';
 import 'package:messapp/util/ui_state.dart';
 import 'package:messapp/util/widgets.dart';
@@ -98,9 +99,7 @@ class _ListingTab extends StatelessWidget {
               Provider.of<SimplePresenter<GrubRepository, Data>>(context);
           await presenter.refresh();
         } on Exception catch (e) {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(e.toString()),
-          ));
+          e.prettify().showSnackBar(context);
         }
       },
     );

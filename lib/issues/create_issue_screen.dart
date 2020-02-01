@@ -187,8 +187,8 @@ class _IssueEntryState extends State<_IssueEntry> {
       await Provider.of<IssueRepository>(context).createIssue(title);
       Navigator.of(context).pop();
       Navigator.of(context).pop(true);
-    } on Exception {
-      'Could not create issue....'.showSnackBar(context);
+    } on Exception catch (e) {
+      e.prettify().showSnackBar(context);
       Navigator.of(context).pop();
     }
   }
