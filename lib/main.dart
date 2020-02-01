@@ -170,7 +170,7 @@ class MessApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Mess App',
+      title: 'SSMS Official',
       theme: appThemeData,
       initialRoute: initialRoute,
       routes: {

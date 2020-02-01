@@ -7,12 +7,14 @@ class Screen extends StatelessWidget {
     @required this.title,
     @required this.child,
     @required this.selectedTabIndex,
+    this.isTopLevel = false,
     Key key,
   }) : super(key: key);
 
   final String title;
   final Widget child;
   final int selectedTabIndex;
+  final bool isTopLevel;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class Screen extends StatelessWidget {
         appBar: AppBar(
           title: Text(title, style: appBarStyle),
           iconTheme: IconThemeData(color: AppColors.textDark),
+          automaticallyImplyLeading: !isTopLevel,
           centerTitle: true,
         ),
         body: SafeArea(
@@ -53,6 +56,7 @@ class TabbedScreen extends StatelessWidget {
     @required this.children,
     @required this.selectedTabIndex,
     this.fab,
+    this.isTopLevel = false,
     Key key,
   })  : assert(tabs.length == children.length),
         super(key: key);
@@ -62,6 +66,7 @@ class TabbedScreen extends StatelessWidget {
   final List<Widget> children;
   final int selectedTabIndex;
   final Widget fab;
+  final bool isTopLevel;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +89,7 @@ class TabbedScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(title, style: appBarStyle),
             iconTheme: IconThemeData(color: AppColors.textDark),
+            automaticallyImplyLeading: !isTopLevel,
             centerTitle: true,
             bottom: TabBar(
               isScrollable: true,

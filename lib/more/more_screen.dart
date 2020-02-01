@@ -9,31 +9,50 @@ class MoreScreen extends StatelessWidget {
     return Screen(
       title: 'More',
       selectedTabIndex: 4,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 80.0),
+      isTopLevel: true,
+      child: Stack(
         children: [
-          _MoreTile(
-            name: 'Notices',
-            icon: AppIcons.notices,
-            routeName: '/notices',
+          ListView(
+            padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 80.0),
+            children: [
+              _MoreTile(
+                name: 'Notices',
+                icon: AppIcons.notices,
+                routeName: '/notices',
+              ),
+              SizedBox(height: 16.0),
+              _MoreTile(
+                name: 'SSMS GC Members',
+                icon: AppIcons.contacts,
+                routeName: '/contacts',
+              ),
+              SizedBox(height: 16.0),
+              _MoreTile(
+                name: 'Our Team',
+                icon: AppIcons.developers,
+                routeName: '/developers',
+              ),
+              SizedBox(height: 16.0),
+              _MoreTile(
+                name: 'About SSMS',
+                icon: AppIcons.about,
+                routeName: '/about',
+              ),
+            ],
           ),
-          SizedBox(height: 16.0),
-          _MoreTile(
-            name: 'SSMS GC Members',
-            icon: AppIcons.contacts,
-            routeName: '/contacts',
-          ),
-          SizedBox(height: 16.0),
-          _MoreTile(
-            name: 'Our Team',
-            icon: AppIcons.developers,
-            routeName: '/developers',
-          ),
-          SizedBox(height: 16.0),
-          _MoreTile(
-            name: 'About SSMS',
-            icon: AppIcons.about,
-            routeName: '/about',
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(
+                '🔥 Hand-baked by the SSMS Tech Team! 🔥',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textDark,
+                ),
+              ),
+            ),
           ),
         ],
       ),

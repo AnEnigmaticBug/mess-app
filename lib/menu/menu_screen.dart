@@ -22,6 +22,7 @@ class MenuScreen extends StatelessWidget {
     return Screen(
       title: 'Menu',
       selectedTabIndex: 2,
+      isTopLevel: true,
       child: Consumer<SimplePresenter<MenuRepository, List<Menu>>>(
         builder: (_, presenter, __) {
           final state = presenter.state;

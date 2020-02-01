@@ -39,6 +39,7 @@ class IssuesScreen extends StatelessWidget {
           return Screen(
             title: 'Issues',
             selectedTabIndex: 3,
+            isTopLevel: true,
             child: Center(child: CircularProgressIndicator()),
           );
         }
@@ -47,6 +48,7 @@ class IssuesScreen extends StatelessWidget {
           return TabbedScreen(
             title: 'Issues',
             selectedTabIndex: 3,
+            isTopLevel: true,
             tabs: ['Recent', 'Popular', 'Solved'],
             children: [
               _IssueTab<ActiveIssue>(state.data.recentIssues),
@@ -80,6 +82,7 @@ class IssuesScreen extends StatelessWidget {
           return Screen(
             title: 'Issues',
             selectedTabIndex: 3,
+            isTopLevel: true,
             child: ErrorMessage(
               message: state.message,
               onRetry: presenter.restart,

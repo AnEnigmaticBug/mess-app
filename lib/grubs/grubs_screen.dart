@@ -34,6 +34,7 @@ class GrubsScreen extends StatelessWidget {
           return Screen(
             title: 'Grubs',
             selectedTabIndex: 1,
+            isTopLevel: true,
             child: Center(child: CircularProgressIndicator()),
           );
         }
@@ -42,6 +43,7 @@ class GrubsScreen extends StatelessWidget {
           return TabbedScreen(
             title: 'Grubs',
             selectedTabIndex: 1,
+            isTopLevel: true,
             tabs: ['Upcoming', 'Signed Up'],
             children: [
               _ListingTab(
@@ -60,6 +62,7 @@ class GrubsScreen extends StatelessWidget {
           return Screen(
             title: 'Grubs',
             selectedTabIndex: 1,
+            isTopLevel: true,
             child: ErrorMessage(
               message: state.message,
               onRetry: presenter.restart,

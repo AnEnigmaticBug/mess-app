@@ -14,6 +14,7 @@ class ProfileScreen extends StatelessWidget {
     return Screen(
       title: 'Profile',
       selectedTabIndex: 0,
+      isTopLevel: true,
       child: Consumer<ProfilePresenter>(
           // ignore: missing_return
           builder: (_, presenter, __) {

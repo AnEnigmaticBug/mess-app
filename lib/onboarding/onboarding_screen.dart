@@ -81,7 +81,7 @@ class _ContentState extends State<_Content> {
           return _OnboardingScreen(
             text1: 'Pull to refresh the content',
             text2: 'Get push notifications',
-            buttonText: 'Lets dine',
+            buttonText: 'Let\'s dine',
             imageAsset1: 'assets/images/onboarding-refresh.png',
             imageAsset2: 'assets/images/onboarding-notification.png',
             screenImageAsset: 'assets/images/onboarding-notices-screen.png',
