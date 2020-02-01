@@ -42,13 +42,13 @@ class GrubRepository extends SimpleRepository {
   }) async {
     return await _db.transaction((txn) async {
       final grubRow = (await txn.rawQuery('''
-        SELECT id, name, organizer, date, signUpDeadline, cancelDeadline, slotATime, slotBTime, audience
+        SELECT id, name, organizer, date, signUpDeadline, cancelDeadline, audience
           FROM Grub
          WHERE id == ?
       ''', [grubId]))[0];
 
       final offeringRows = await txn.rawQuery('''
-        SELECT o.id AS oid, o.name, o.items, o.venue, o.price, t.id AS tid, t.slot
+        SELECT o.id AS oid, o.name, o.items, o.slotATime, o.slotBTime, o.venue, o.price, t.id AS tid, t.slot
           FROM Offering o
                LEFT JOIN Ticket t ON o.id == t.offeringId
          WHERE o.grubId == ?
@@ -76,8 +76,8 @@ class GrubRepository extends SimpleRepository {
           date: Date.parse(grubRow['date']),
           cancelDeadline: Date.parse(grubRow['cancelDeadline']),
           time: signedOfferingRow['slot'] == 0
-              ? grubRow['slotATime']
-              : grubRow['slotBTime'],
+              ? signedOfferingRow['slotATime']
+              : signedOfferingRow['slotBTime'],
           venue: signedOfferingRow['venue'],
           offerings: offerings,
           signedOfferingName: signedOfferingRow['name'],
@@ -196,8 +196,8 @@ class GrubRepository extends SimpleRepository {
 
         await txn.rawInsert('''
           INSERT
-            INTO Grub (id, name, organizer, date, signUpDeadline, cancelDeadline, slotATime, slotBTime, audience)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INTO Grub (id, name, organizer, date, signUpDeadline, cancelDeadline, audience)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', [
           grubJson['id'],
           grubJson['name'],
@@ -205,21 +205,21 @@ class GrubRepository extends SimpleRepository {
           grubJson['date'],
           grubJson['purchase_deadline'],
           grubJson['cancellation_deadline'],
-          grubJson['slot_a'],
-          grubJson['slot_b'],
           audience.index,
         ]);
 
         for (var offeringJson in offeringsJson) {
           await txn.rawInsert('''
             INSERT
-              INTO Offering (id, grubId, name, items, venue, price)
-            VALUES (?, ?, ?, ?, ?, ?)
+              INTO Offering (id, grubId, name, items, slotATime, slotBTime, venue, price)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
           ''', [
             offeringJson['id'],
             grubJson['id'],
             offeringJson['category'],
             offeringJson['items'].map((i) => i['name']).join('~'),
+            offeringJson['batch_allocated'] ? offeringJson['slot_a'] : 'TBA',
+            offeringJson['batch_allocated'] ? offeringJson['slot_b'] : 'TBA',
             offeringJson['mess_name'],
             offeringJson['app_price'],
           ]);

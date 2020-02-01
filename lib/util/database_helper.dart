@@ -21,8 +21,6 @@ Future<Database> databaseInstance(String dbName) async {
           date TEXT NOT NULL,
           signUpDeadline TEXT NOT NULL,
           cancelDeadline TEXT NOT NULL,
-          slotATime TEXT,
-          slotBTime TEXT,
           audience INTEGER NOT NULL CHECK(audience IN (0, 1, 2))
         )
       ''');
@@ -33,6 +31,8 @@ Future<Database> databaseInstance(String dbName) async {
           grubId INTEGER NOT NULL,
           name TEXT NOT NULL,
           items TEXT NOT NULL,
+          slotATime TEXT,
+          slotBTime TEXT,
           venue TEXT,
           price TEXT NOT NULL,
           FOREIGN KEY(grubId) REFERENCES Grub(id) ON DELETE CASCADE
