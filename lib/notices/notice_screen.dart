@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messapp/notice/notice.dart';
-import 'package:messapp/notice/notice_repository.dart';
+import 'package:messapp/notices/notice.dart';
+import 'package:messapp/notices/notice_repository.dart';
 import 'package:messapp/util/app_colors.dart';
 import 'package:messapp/util/app_icons.dart';
 import 'package:messapp/util/date.dart';

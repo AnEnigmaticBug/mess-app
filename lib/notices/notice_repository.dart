@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:messapp/notice/notice.dart';
+import 'package:messapp/notices/notice.dart';
 import 'package:messapp/util/date.dart';
 import 'package:messapp/util/http_exceptions.dart';
 import 'package:messapp/util/pref_keys.dart';
@@ -48,13 +48,13 @@ class NoticeRepository extends SimpleRepository {
     await _db.transaction((txn) async {
       await txn.rawDelete('''
         DELETE
-          FROM Notices
+          FROM Notice
       ''');
 
       for (var noticeJson in noticesJson) {
         await txn.rawInsert('''
           INSERT
-            INTO Notices (id, body, heading, startDate, endDate, isCritical)
+            INTO Notice (id, body, heading, startDate, endDate, isCritical)
           VALUES (?, ?, ?, ?, ?, ?)
         ''', [
           noticeJson['id'],
@@ -78,7 +78,7 @@ class NoticeRepository extends SimpleRepository {
 
     final rows = await _db.rawQuery('''
       SELECT id, body, heading, startDate, isCritical
-        FROM Notices
+        FROM Notice
        ORDER BY startDate
     ''');
 

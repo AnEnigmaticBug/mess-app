@@ -84,7 +84,7 @@ Future<Database> databaseInstance(String dbName) async {
       ''');
 
       await txn.execute('''
-        CREATE TABLE Notices(
+        CREATE TABLE Notice(
           id INTEGER PRIMARY KEY,
           body TEXT,
           heading TEXT NOT NULL,
