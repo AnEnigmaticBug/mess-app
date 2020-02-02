@@ -52,7 +52,10 @@ void main() async {
     final prefs = await SharedPreferences.getInstance();
     final client = NiceClient(
       baseUrl: 'http://142.93.213.45/api',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'App-Version': '2.0.1',
+        'Content-Type': 'application/json',
+      },
     );
     final keeper = TimeKeeper(
       durations: {
