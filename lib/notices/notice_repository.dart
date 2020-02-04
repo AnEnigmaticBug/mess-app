@@ -79,8 +79,9 @@ class NoticeRepository extends SimpleRepository {
     final rows = await _db.rawQuery('''
       SELECT id, body, heading, startDate, isCritical
         FROM Notice
-       ORDER BY startDate
-    ''');
+       WHERE endDate >= ?
+       ORDER BY startDate DESC
+    ''', [Date.now().toIso8601String()]);
 
     for (var row in rows) {
       notices.add(Notice(
