@@ -323,8 +323,8 @@ class _DishTile extends StatelessWidget {
             onRate: (rating) async {
               try {
                 await dish.rate(rating);
-              } on Exception catch (e) {
-                e.prettify().showSnackBar(context);
+              } on Exception {
+                'You\'re not allowed to rate this item'.showSnackBar(context);
               }
             },
           ),
