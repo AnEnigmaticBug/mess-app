@@ -53,7 +53,7 @@ void main() async {
     final client = NiceClient(
       baseUrl: 'http://142.93.213.45/api',
       headers: {
-        'App-Version': '2.0.1',
+        'App-Version': '2.0.2',
         'Content-Type': 'application/json',
       },
     );
