@@ -7,28 +7,32 @@ import 'package:provider/provider.dart';
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFFF49B65),
-            Color(0xFFD9492D),
+    // WillPopScope stops the user from accessing the app w/o logging in.
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFF49B65),
+              Color(0xFFD9492D),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+                color: Color(0x6EDD5435),
+                offset: Offset(3.0, 8.0),
+                blurRadius: 10.0),
           ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
         ),
-        boxShadow: [
-          BoxShadow(
-              color: Color(0x6EDD5435),
-              offset: Offset(3.0, 8.0),
-              blurRadius: 10.0),
-        ],
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: _Content(),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SafeArea(
+            child: _Content(),
+          ),
         ),
       ),
     );
