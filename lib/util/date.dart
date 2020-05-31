@@ -12,10 +12,9 @@ class Date implements Comparable<Date> {
 
   factory Date.parse(String iso8061String) {
     try {
-      final parts = iso8061String.substring(0, 10).split('-');
-      return Date(
-          int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
-    } on Exception {
+      final dateTime = DateTime.parse(iso8061String);
+      return Date(dateTime.year, dateTime.month, dateTime.day);
+    } catch (_) {
       throw FormatException('String is not in the ISO-8601 format');
     }
   }
@@ -38,7 +37,7 @@ class Date implements Comparable<Date> {
           other.year == year);
 
   @override
-  int get hashCode => day.hashCode ^ month.hashCode & year.hashCode;
+  int get hashCode => day.hashCode ^ month.hashCode ^ year.hashCode;
 
   @override
   int compareTo(Date other) {
